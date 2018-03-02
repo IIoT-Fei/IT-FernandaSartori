@@ -1,0 +1,49 @@
+{%  extends 'cabecalho.html' %}
+
+{%  block content %}
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal" >
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Edições</h1>
+      </center>
+
+  </div>
+</div>
+
+<form action="/editarLab?lab_id={{ lab_id }}&disc_id={{ disc_id }}" method="POST">
+    <center>
+    <div id="espaco">
+            <div style="width: 700px; height: 390px; border: 2px solid #607d8b; border-radius:20px; background: white; margin-top: 50px;">
+
+                <p class="textotopo" style="margin-top: 10px"><font face="verdana" color="#009688" size="6" > Edição do Laboratório</font></p>
+                <p class="texto"><font face="verdana" color="#009688" > Título do Laboratório:</font></p>
+                <input type="text" name="Titulo" size="70"  value="{{ lab.titulo }}" class="formulariologin"/>
+
+                <br>
+                <form enctype="multipart/form-data" style=" margin-left: 20px; text-align: left; margin-top: 20px">
+
+                         <font face="verdana" color="#009688" style="margin-left: -600px; margin-top: 5px">
+                               Anexo:
+                         </font>
+                         <input type="file" name="Anexo" style="margin-top: 5px; margin-left: -260px"/>
+                </form>
+
+                <br>
+                       <font face="verdana" color="#009688" style="margin-left: -520px" >Data de entrega:</font>
+                        <br>
+                        <input type="date" name="dataentrega" style="margin-left: -450px; width: 200px; margin-top: 5px" class="formulariologin">
+
+
+                <br>
+                <input type="submit" value="Salvar" class="formulariologin" style="width: 100px">
+
+            </div>
+
+    </div>
+    </center>
+</form>
+{% endblock %}

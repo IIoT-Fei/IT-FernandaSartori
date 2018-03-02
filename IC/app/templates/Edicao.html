@@ -1,0 +1,48 @@
+{%  extends 'cabecalho.html' %}
+
+{%  block content %}
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal" >
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Edições</h1>
+      </center>
+
+  </div>
+</div>
+<form action="/edicao?disc={{ disciplina.id }}" method="POST">
+    <center>
+    <div id="espaco">
+            <div style="width: 750px; height: 460px; border: 2px solid #607d8b; border-radius:20px; background: white; margin-top: 50px;">
+
+                <p class="textotopo" style="margin-top: 10px"><font face="verdana" color="#009688" size="6" > Edição de Disciplina</font></p>
+                <p class="texto"><font face="verdana" color="#009688" > Código da disciplina:</font></p>
+                <input type="text" name="Nome" size="70"  value="{{ disciplina.codigo_disc }}" class="formulariologin" disabled="disabled"/>
+
+
+                <p class="texto" style="margin-top: 15px"><font face="verdana" color="#009688" style="margin-top: 5px"> Título da Disciplina:</font></p>
+                <input type="text" name="Titulo" size="70"  value="{{ disciplina.nome_disc }}" class="formulariologin" />
+
+
+                <p class="texto" style="margin-top: 15px"><font face="verdana" color="#009688" > Chave de acesso:</font></p>
+                <input type="password" name="Chave" size="70"  value="{{ disciplina.chave }}" class="formulariologin"/>
+
+                <br>
+                    <font face="verdana" color="#009688" style="margin-left: -550px;" >
+                        Logo da disciplina:
+                    </font>
+
+                    <input type="file" name="Imagem" style="margin-top: 10px; margin-left: -300px"/>
+
+                <br>
+                <input type="submit" value="Salvar" class="formulariologin" style="width: 100px">
+
+            </div>
+
+    </div>
+    </center>
+</form>
+{% endblock %}

@@ -1,0 +1,47 @@
+{%  extends 'cabecalho.html' %}
+
+{% block title %} Cadastro{% endblock %}<!-- Se já houver outro block title na parte base, será sobregravado, mas se vc colocar
+                                            a função super, vc concatena o original com o que vc quer colocar-->
+
+
+{%  block content %}
+
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal" >
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+      <h1>Agradecimentos</h1>
+      </center>
+  </div>
+</div>
+
+<div class="pagina">
+    <center>
+    <div style="display: flex; flex-direction: row ;  -webkit-justify-content: center;">
+
+        <div style="margin-top: 85px; text-align:center; vertical-align: middle; margin-left: 15px">
+            <img src="{{url_for('static', filename='FEI_logo_2015.png')}}" />
+
+        </div>
+
+         <div style="text-align:center; vertical-align: middle; margin-left: 15px">
+             <img src="{{url_for('static', filename='vivo-telefonica.png')}}" />
+            <img src="vivo-telefonica.png">
+        </div>
+
+    </div>
+        <font face="verdana" color="black" size="3">
+        <br><br>Colaboração em design: Renato Neto
+        <br>Twitter: @TheNetoh
+        <br>Facebook: Renato Neto
+        <br>Pinterest: TheRandN
+        </font>
+    </center>
+
+
+</div>
+
+{% endblock %}

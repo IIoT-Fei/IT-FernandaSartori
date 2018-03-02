@@ -1,0 +1,106 @@
+{%  extends 'cabecalho.html' %}
+
+{% block title %} Cadastro{% endblock %}<!-- Se já houver outro block title na parte base, será sobregravado, mas se vc colocar
+                                            a função super, vc concatena o original com o que vc quer colocar-->
+
+
+{%  block content %}
+
+
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container" VALIGN="MIDDLE" ALIGN="CENTER" >
+        <h1>Laboratórios </h1>
+  </div>
+</div>
+
+<style>
+
+.vertical-menu {
+    width: 1000px;
+    margin-top: 70px;
+}
+
+.vertical-menu a {
+
+    color: black;
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+    height: 80px;
+    width: 300px;
+
+}
+
+.vertical-menu div:hover {
+    background-color: #ccc;
+
+}
+
+</style>
+
+<form action="" method="post">
+    <center>
+    <div class="espaco">
+
+            <div class="vertical-menu" style="margin-left: 0px; margin-top: 20px">
+
+
+
+                        <div style="width: 600px; height: 100px; background-color: #00bcd4; margin-top: 5px">
+                            <a href="" style="background-color: #2b542c; margin-left: -280px; width: 200px; height: 50px;  ">
+                                <font face="verdana" color="#009688" size="5" style="margin-left: -100px" >
+                                          LAB 5
+                                </font>
+                            </a>
+
+                                <a href="" style="width: 50px; height: 40px; margin-left: 300px; background-color: #9c27b0 ">
+                                    <img src="{{url_for('static', filename='Novo.png')}}" title="Editar Laboratório"  style="margin-bottom: 0px; width:40px; height:30px; margin-top: -15px; margin-left:-7px; "/>
+                                </a>
+                                <a href="" style="width: 50px; height: 40px; margin-left: 400px; background-color: #00ffff; margin-top: -40px ">
+                                    <img src="{{url_for('static', filename='delete_remove_bin_icon-icons.com_72400.png')}}" title="Excluir Discplina" style="width:40px; height:40px; margin-bottom: 5px; margin-top: -15px; margin-left: -7px"/>
+                                </a>
+                                <a href="" style="width: 50px; height: 40px; margin-left: 500px; background-color: #5cb85c; margin-top: -40px ">
+                                     <img src="{{url_for('static', filename='2000px-Eye_open_font_awesome.svg.png')}}" title="Tornar visível somente para Professores"  class="mostrarparaaluno" style="margin-bottom: 2px; height: 40px; margin-top: -13px; margin-left: -5px; background-color: transparent"/>
+                                </a>
+
+                            <hr style="height:1px; border:none; color:#000; background-color:#607d8b; margin-top: 0px; width: 600px; margin-left: 0px"/>
+
+                        </div>
+
+                         <div style="width: 600px; height: 100px; background-color: #00bcd4; margin-top: 5px">
+                            <a href="" style="background-color: #2b542c; margin-left: -280px; width: 200px; height: 50px;  ">
+                                <font face="verdana" color="#009688" size="5" style="margin-left: -100px" >
+                                          LAB 5
+                                </font>
+                            </a>
+
+                                <a href="" style="width: 50px; height: 40px; margin-left: 300px; background-color: #9c27b0 ">
+                                    <img src="{{url_for('static', filename='Novo.png')}}" title="Editar Laboratório"  style="margin-bottom: 0px; width:40px; height:30px; margin-top: -15px; margin-left:-7px; "/>
+                                </a>
+                                <a href="" style="width: 50px; height: 40px; margin-left: 400px; background-color: #00ffff; margin-top: -40px ">
+                                    <img src="{{url_for('static', filename='delete_remove_bin_icon-icons.com_72400.png')}}" title="Excluir Discplina" style="width:40px; height:40px; margin-bottom: 5px; margin-top: -15px; margin-left: -7px"/>
+                                </a>
+                                <a href="" style="width: 50px; height: 40px; margin-left: 500px; background-color: #5cb85c; margin-top: -40px ">
+                                     <img src="{{url_for('static', filename='2000px-Eye_open_font_awesome.svg.png')}}" title="Tornar visível somente para Professores"  class="mostrarparaaluno" style="margin-bottom: 2px; height: 40px; margin-top: -13px; margin-left: -5px; background-color: transparent"/>
+                                </a>
+
+                            <hr style="height:1px; border:none; color:#000; background-color:#607d8b; margin-top: 0px; width: 600px; margin-left: 0px"/>
+
+                        </div>
+
+
+            </div>
+
+
+
+
+    </div>
+    </center>
+</form>
+
+{%  endblock %}
+

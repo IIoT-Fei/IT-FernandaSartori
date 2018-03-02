@@ -1,0 +1,50 @@
+{%  extends 'cabecalho.html' %}
+
+{%  block content %}
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal" >
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+    <center>
+      <h1>Home</h1>
+    </center>
+
+
+  </div>
+</div>
+
+<div class="pagina">
+
+    <div class="caixa">
+
+            <a href="{{ url_for('exercicio') }}">
+                <div class="disciplina">
+
+                    <div class="titulodisc" style="height: 20px;">
+                        <h6>CC1620</h6>
+                    </div>
+                    <img src="{{url_for('static', filename='develop01.png')}}" style="width:180px; height:150px; margin-top: 10px; margin-left: 5px"/>
+
+                    <h4 style="margin-top: 15px">Desenvolvimento WEB</h4>
+                </div>
+            </a>
+
+            <a href="{{ url_for('exercicio') }}">
+                <div class="disciplina">
+                    <div class="titulodisc" style="height: 20px;" >
+                        <h6>CC4652</h6>
+                    </div>
+
+                    <img src="{{url_for('static', filename='Arvores-binarias-binary-trees.png')}}" style="width:180px; height:150px; margin-top: 10px; margin-left: 5px"/>
+
+                    <h4 style="margin-top: 15px">Estrutura de Dados</h4>
+                </div>
+            </a>
+    </div>
+
+
+
+</div>
+{% endblock %}

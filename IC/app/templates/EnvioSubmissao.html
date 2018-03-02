@@ -1,0 +1,114 @@
+{%  extends 'cabecalho.html' %}
+
+{%  block content %}
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal" >
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Envios</h1>
+      </center>
+
+  </div>
+</div>
+
+<style>
+td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    width: 300px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+
+<center>
+
+    <div style="display: flex; flex-direction: row;" style="width: 3000px; height: 1000px">
+
+        <div style="width: 700px; height: 300px; border: 2px solid #607d8b; border-radius:20px; background: white; justify-content: center; margin-top: 40px; margin-left: 80px; ">
+          <br>
+            {{ lab.descricao }}
+
+        </div>
+
+        <div style="width: 500px; height: 630px; border: 2px solid #607d8b; border-radius:20px; background: white; justify-content: center; margin-top: 40px; margin-left: 20px; margin-bottom: 50px">
+
+            <div style="width: 450px; height: 600px; margin-top: 20px; overflow: auto" >
+
+                <table>
+                        {% if env | length == 0 %}
+                            <tr>
+                                <td> Nenhuma submissão foi enviada! </td>
+                            </tr>
+                        {% else %}
+                       {%   for i in env %}
+                           <tr>
+
+                                   <td> {{ lab.titulo }}</td>
+                                    <td> {{ i.status }}
+                                    {{ i.mensagem  }}
+                                    </td>
+                           </tr>
+                       {% endfor %}
+                       {% endif %}
+                </table>
+           </div>
+        </div>
+
+    </div>
+
+<form action="/enviosub?lab_id={{ lab.id }}" method="post">
+
+        <div id="espaco">
+
+            <div style="width: 700px; height: 300px; border: 2px solid #607d8b; border-radius:20px; background: white; margin-top: -350px; justify-content: center; margin-left: -500px ">
+
+                    <p class="textotopo" style="margin-top: 10px"><font face="verdana" color="#009688" size="5"> Nova Submissao</font></p>
+                    <div style="background: white; display: flex; margin-left: 45px; margin-right: 40px">
+                        <div>
+                            <font face="verdana" color="#009688"><h6 style=" margin: 0; padding: 0;">Exercicio</h6></font>
+                            <input type="text" size="30" style="width: 290px; height: 30px; display: inline-block; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                        </div>
+
+                        <div style="margin-left: 15px; ">
+                            <font face="verdana" color="#009688"><h6 style=" margin: 0; padding: 0px;">Linguagem</h6></font>
+
+                                    <select id="linguagem" name="linguagem" style="width: 290px; height: 30px; display: inline-block; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                                        <option value="c">C</option>
+                                        <option value="c++">C++</option>
+                                        <option value="java">Java</option>
+                                        <option value="python">Python</option>
+                                    </select>
+
+                        </div>
+
+                    </div>
+
+                    <br><br>
+
+                        <font face="verdana" color="#009688" style=" margin-left: -550px; text-align: left; "> Anexo: </font>
+                        <input type="file" name="imagem" style="margin-left: -250px; margin-top: 10px"/>
+
+
+                    <br>
+                    <div style="display: flex; justify-content: flex-end; margin-right: 45px; margin-top: 10px">
+                        <input type="submit" value="Submeter" class="formulariologin" style="width: 100px" >
+                    </div>
+            </div>
+
+        </div>
+</form>
+</center>
+
+<br>
+<br>
+<br>
+
+
+{% endblock %}

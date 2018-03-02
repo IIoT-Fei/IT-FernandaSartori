@@ -1,0 +1,207 @@
+{%  extends 'cabecalho.html' %}
+
+{% block title %} Cadastro{% endblock %}<!-- Se já houver outro block title na parte base, será sobregravado, mas se vc colocar
+                                            a função super, vc concatena o original com o que vc quer colocar-->
+
+
+{%  block content %}
+
+
+<div zclass="w3-main" id="main">
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Relatórios</h1>
+      </center>
+
+  </div>
+</div>
+
+</div>
+
+
+    <style>
+#customers {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 00px;
+}
+
+#customers td, #customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+#customers tr:nth-child(even){
+    background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #8c8c8c;}
+
+#customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #757575;
+    color: white;
+}
+</style>
+
+<form action="" method="POST">
+
+    <center>
+    <div style=" width: 1000px; height: 800px; background: #d3d3d3;">
+            <div style="width: 800px; height: 450px; background: #d3d3d3; margin-top: 50px; overflow: auto">
+
+               <table id="customers">
+                  <tr>
+                    <th> </th>
+
+                     {% for i in labs %}
+                      <th> {{ i.titulo }}</th>
+
+                     {% endfor %}
+                  <th> Notas</th>
+                  </tr>
+
+               {% for i in alunos %}
+                    <tr>
+                        <td> {{  i.user.name }} </td>
+                        {%   for d in dados %}
+                          {% set i = d[0] %}
+                          {% set s = d[1] %}
+
+                                {% if s == 0 %}
+                                    <td>Aprovado</td>
+                                {% elif s == 1 %}
+                                      <td>Reprovado</td>
+                                {% else %}
+                                     <td>Nenhuma Tentativa</td>
+                                {% endif %}
+
+
+                {% endfor %}
+                    </tr>
+               {% endfor %}
+
+
+
+                   <tr>
+                    <td>Fernanda Beltrame</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Reprovado</td>
+                    <td>4</td>
+
+                  </tr>
+                  <tr>
+                    <td>Fernanda Sartori </td>
+                    <td>Aprovado</td>
+                    <td>Reprovado</td>
+                    <td>Aprovado</td>
+                    <td>Reprovado</td>
+                    <td>Aprovado</td>
+                    <td>3</td>
+                  </tr>
+                  <tr>
+                    <td>Fernanda S B</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>4</td>
+                  </tr>
+                  <tr>
+                    <td>Guilherme </td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Reprovado</td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>2</td>
+                  </tr>
+                   <tr>
+                    <td>Guilherme Wachs </td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>Fernanda </td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>Aprovado</td>
+                    <td>Reprovado</td>
+                    <td>Aprovado</td>
+                    <td>2</td>
+                  </tr>
+                  <tr>
+                    <td>Guilherme Lopes </td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Nenhuma Tentativa</td>
+                    <td>Aprovado</td>
+                    <td>3</td>
+                  </tr>
+
+                  <tr>
+                    <td>Fernanda S Beltrame</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>5</td>
+                  </tr>
+                  <tr>
+                    <td>Guilherme W  </td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>5</td>
+                  </tr>
+
+                  <tr>
+                    <td>Fernanda Sartori Beltrame</td>
+                    <td>Reprovado</td>
+                    <td>Reprovado</td>
+                    <td>Reprovado</td>
+                    <td>Reprovado</td>
+                    <td>Reprovado</td>
+                    <td>0</td>
+                  </tr>
+                  <tr>
+                    <td>Guilherme Wachs Lopes</td>
+                    <td>Reprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Aprovado</td>
+                    <td>Reprovado</td>
+                    <td>3</td>
+                  </tr>
+
+
+
+
+                </table>
+
+            </div>
+
+    </div>
+    </center>
+
+</form>
+
+
+{%  endblock %}

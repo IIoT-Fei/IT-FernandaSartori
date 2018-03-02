@@ -1,0 +1,61 @@
+{%  extends 'cabecalho.html' %}
+{%  block content %}
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal" >
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Nova Disciplina</h1>
+      </center>
+
+  </div>
+</div>
+
+<center>
+<form action="/NovaDiscp" method="POST">
+
+    <div class="espaco">
+         {{ form.csrf_token }}
+        <div class="inscricao" style="height: 550px">
+
+            <p class="textotopo" style="margin-left: -5px; margin-top: 15px">
+                <font face="verdana" color="#009688" size="6">
+                    Nova Disciplina
+                </font>
+            </p>
+            <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" > Código da Disciplina:</font></p>
+             <input type="text" name="Titulo" size="70"  placeholder="Código da Disciplina" class="formulariologin" />
+
+            <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" > Nome da Disciplina:</font></p>
+             <input type="text" name="Nome" size="70"  placeholder="Nome da Disciplina" class="formulariologin" />
+
+
+            <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" > Escolher chave de acesso da Disciplina:</font></p>
+             <input type="password" name="Chave" size="70"  placeholder="Escolher chave de acesso da disciplina" class="formulariologin" />
+
+            <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" > Confirmar chave de acesso da Disciplina:</font></p>
+             <input type="password" name="Confchave" size="70"  placeholder="Escolher chave de acesso da disciplina" class="formulariologin" />
+
+             <p style="margin-top: 10px">
+                <form enctype="multipart/form-data" style=" margin-left: -50px; text-align: left; margin-top: 10px">
+                    <font face="verdana" color="#009688" style="margin-left: -450px; margin-top: 10px"  > Escolher Logo da Disciplina: </font>
+                    <input type="file" name="Imagem" style="margin-top: 10px; margin-left: -300px" />
+                </form>
+            </p>
+
+            <p style="margin-top: 15px">
+                     <font face="verdana" color="#009688" style="margin-left: -385px; "  > Tornar visível para alunos: </font>
+                    <input type="checkbox" name="Visivel"> Vísivel
+
+            </p>
+
+            <input type="submit" value="Criar" class="formulariologin" style="width: 100px; margin-top: 25px">
+
+
+        </div>
+
+    </div>
+</form>
+</center>
+{% endblock %}
