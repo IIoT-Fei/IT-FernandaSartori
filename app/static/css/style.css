@@ -1,0 +1,355 @@
+
+.caixa > a {
+    text-decoration: none;
+}
+
+.disciplina > a {
+    text-decoration: none;
+}
+
+.espaco {
+    width: 1000px;
+    height: 500px;
+    background: #d3d3d3;
+}
+#espaco{
+    width: 1000px;
+    height: 500px;
+    background: #d3d3d3;
+}
+
+#divs {
+    border: 1px solid white;
+    background: whitesmoke;
+    width: 230px;
+    height: 260px;
+
+    text-align: center;
+    margin-right: 0px;
+    margin-left: 20px;
+    margin-top: 40px;
+}
+
+#disc {
+
+}
+
+#cont {
+    background: #009688;
+    color: white;
+    width: 228px;
+    height: 25px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#content {
+
+    width: 300px;
+    height: 250px;
+    vertical-align: text-bottom;
+    text-align: center;
+    vertical-align: middle;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.item {
+    height: 100px;
+    width: 500px;
+    display: flex;
+    flex-direction: row;
+
+}
+
+.inscricao {
+    width: 700px;
+    height: 470px;
+    border: 2px solid #607d8b;
+    border-radius: 20px;
+    background: white;
+    margin-top: 50px;
+}
+#inscricao{
+    width: 700px;
+    height: 470px;
+    border: 2px solid #607d8b;
+    border-radius: 20px;
+    background: white;
+    margin-top: 50px;
+}
+
+#inscricao2 {
+    width: 700px;
+    height: 370px;
+    border: 2px solid #607d8b;
+    border-radius: 20px;
+    background: white;
+
+    margin-top: 50px;
+}
+
+.texto {
+    margin-left: 20px;
+    text-align: left;
+}
+
+.textotopo {
+    margin-left: 20px;
+    text-align: center;
+}
+
+.pagina {
+    background: #d3d3d3;
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+
+}
+
+.caixa {
+     display: -webkit-flex;
+    display: flex;
+    flex-direction: row;
+    -webkit-justify-content: center;
+    -webkit-flex-flow: row wrap;
+}
+
+.titulodisc {
+    background-color: #009688;
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+
+}
+
+.disciplina {
+
+    border: 1px solid white;
+    width: 230px;
+    height: 260px;
+    text-align: center;
+    margin-right: 0px;
+    margin-left: 20px;
+    margin-top: 40px;
+    background: white;
+
+    vertical-align: middle;
+
+}
+
+.linha {
+    margin-top: 70px;
+    background-color: silver;
+    width: 800px;
+    height: 70px;
+    border: 1px solid #000000;
+    border-collapse: collapse;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.textolinha {
+    margin-left: 60px;
+    text-align: left;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.oi {
+
+    width: 100px;
+    height: 20px;
+    color: black;
+    display: flex;
+}
+
+.oii {
+
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 5px;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+
+.oii2 {
+
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 80px;
+
+}
+
+.foto {
+    width: 100px;
+    height: 100px;
+    background-color: white;
+/ / border-radius: 10 %;
+    border: 2px solid #607d8b;
+    margin-top: 20px;
+    margin-left: 20px;
+
+}
+
+.alinhando {
+    display: flex;
+    flex-direction: row;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin: 0 0 60px; /* altura do seu footer */
+}
+
+footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 60px;
+    -webkit-justify-content: center;
+
+}
+
+.incentivo {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+
+}
+
+.quadro {
+    background-image: url(FEI_logo_2015.png);
+
+    border: 1px solid #bbb;
+    border-radius: 3px;
+    box-sizing: border-box;
+    display: inline-block;
+    height: 100px;
+    width: 200px;
+    margin-bottom: 15px;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 40px;
+    margin-top: 10px;
+}
+
+.mostrarparaaluno {
+    background-color: white;
+    width: 40px;
+    height: 30px;
+    margin-bottom: 5px
+}
+
+.fundo {
+    background: url("Logo.png");
+    width: 100%;
+    height: 100%
+}
+
+.formulariologin {
+    display: block;
+    width: 90%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.linguagem {
+    display: block;
+    width: 350px;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.mensagemerro {
+    display: block;
+    width: 90%;
+    text-align: center;
+    height: 30px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #9C1A1C;
+    background-color: #dca7a7;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+
+.mensagemerro2 {
+    display: block;
+    width: 90%;
+    text-align: center;
+    height: 50px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #9C1A1C;
+    background-color: #dca7a7;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+.submissao{
+    width: 70px;
+    height: 30px;
+    border: 2px solid #607d8b;
+    border-radius:20px;
+    background: white;
+    justify-content: center;
+}
+
+tr{
+    margin-top: 30px;
+}
+
+input[type="checkbox"]:checked + .mybtn{
+    background: #5BC0DE;
+}
+
+
+.margem{
+    margin-top: 20px;
+    margin-left: -90px;
+}
