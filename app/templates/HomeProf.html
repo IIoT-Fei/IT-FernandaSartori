@@ -1,0 +1,102 @@
+{%  extends 'cabecalho.html' %}
+
+{%  block content %}
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal" >
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Home</h1>
+      </center>
+
+  </div>
+</div>
+
+<div class="pagina">
+
+    <div class="caixa">
+
+        <a href="{{ url_for('menudisc') }}">
+            <div class="disciplina esconder" style="height: 300px">
+
+                <div class="titulodisc" style="height: 20px; text-align: center; vertical-align: middle">
+                    <h6>CC1620</h6>
+                </div>
+                <img src="{{url_for('static', filename='develop01.png')}}" style="margin-top: 10px; width:150px; height:150px"/>
+
+                <h4>Desenvolvimento WEB</h4>
+               <a href="{{ url_for('edicao') }}">
+                   <img src="{{url_for('static', filename='Novo.png')}}"  title="Editar Discplina" style="margin-bottom: 5px; width:40px; height:30px; margin-top: 10px"/>
+
+               </a>
+                <img src="{{url_for('static', filename='delete_remove_bin_icon-icons.com_72400.png')}}" title="Excluir Discplina" style="width:40px; height:40px; margin-bottom: 5px; margin-top: 10px"/>
+
+                <img src="{{url_for('static', filename='2000px-Eye_open_font_awesome.svg.png')}}" title="Tornar visível somente para Professores"  class="mostrarparaaluno" style="margin-bottom: 2px; height: 40px; margin-top: 10px"/>
+
+            </div>
+        </a>
+
+        <a href="{{ url_for('menudisc') }}">
+            <div class="disciplina" style="height: 300px">
+
+                <div class="titulodisc" style="height: 20px;">
+                 <h6>CC4652</h6>
+                </div>
+
+                <img src="{{url_for('static', filename='Arvores-binarias-binary-trees.png')}}" style="margin-top: 5px"/>
+
+                <h4>Estruturas de Dados</h4>
+
+                <a href="{{ url_for('edicao') }}">
+                   <img src="{{url_for('static', filename='Novo.png')}}" title="Editar Discplina"  style="margin-bottom: 5px; width:40px; height:30px; margin-top: 10px"/>
+
+               </a>
+
+
+                <img src="{{url_for('static', filename='delete_remove_bin_icon-icons.com_72400.png')}}" title="Excluir Discplina" style="width:40px; height:40px; margin-bottom: 5px; margin-top: 10px"/>
+
+                <img src="{{url_for('static', filename='2000px-Eye_open_font_awesome.svg.png')}}" title="Tornar visível somente para Professores"  class="mostrarparaaluno" style="margin-bottom: 2px; height: 40px; margin-top: 10px"/>
+
+
+            </div>
+        </a>
+
+
+        <a href="{{ url_for('novadisc') }}" >
+        <div class="disciplina" style="height: 300px">
+
+            <div class="titulodisc" style="height: 20px;">
+                <h6>Nova Disciplina</h6>
+            </div>
+
+            <img src="{{url_for('static', filename='Editing-edit-icon.png')}}" style="margin-left:      5px; margin-top: 20px; width:200px; height:200px"/>
+
+
+
+        </div>
+        </a>
+
+
+         <a href="{{ url_for('novoProfessor') }}" >
+        <div class="disciplina" style="height: 300px">
+
+            <div class="titulodisc" style="height: 20px;">
+                <h6>Novo Professor</h6>
+            </div>
+
+            <img src="{{url_for('static', filename='4-user-icon.png')}}" style="margin-left:5px; margin-top: 30px; width:200px; height:200px"/>
+
+
+
+        </div>
+        </a>
+
+    </div>
+
+
+
+</div>
+
+{%  endblock %}
