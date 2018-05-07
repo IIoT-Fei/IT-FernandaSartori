@@ -1,0 +1,60 @@
+{%  extends 'cabecalho.html' %}
+
+{% block title %} Cadastro{% endblock %}<!-- Se já houver outro block title na parte base, será sobregravado, mas se vc colocar
+                                            a função super, vc concatena o original com o que vc quer colocar-->
+
+
+{%  block content %}
+
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Cadastro</h1>
+      </center>
+
+  </div>
+</div>
+
+</div>
+
+
+<div class="pagina">
+
+    <div class="caixa" style="margin-top: 60px" >
+        <a href="{{ url_for('cadastroaluno') }}" style="display:block;">
+        <div class="disciplina">
+
+            <div class="titulodisc">
+                <h6>ALUNO</h6>
+            </div>
+            <br>
+           <img src="{{url_for('static', filename='1200px-Desktop_computer_clipart_-_Yellow_theme.svg.png')}}" style="width:190px; height:150px;"/>
+
+
+        </div>
+        </a>
+
+        <a href="{{ url_for('cadastroprof') }}">
+
+        <div class="disciplina">
+
+            <div class="titulodisc">
+             <h6>PROFESSOR</h6>
+            </div>
+
+            <img src="{{url_for('static', filename='professor4.png')}}" style="width:190px; height:190px;"/>
+
+        </div>
+        </a>
+
+    </div>
+
+
+
+</div>
+
+{% endblock %}

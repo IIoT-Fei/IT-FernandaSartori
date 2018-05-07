@@ -1,0 +1,65 @@
+{%  extends 'cabecalho.html' %}
+
+{% block title %} Cadastro{% endblock %}<!-- Se já houver outro block title na parte base, será sobregravado, mas se vc colocar
+                                            a função super, vc concatena o original com o que vc quer colocar-->
+
+
+{%  block content %}
+
+
+<div zclass="w3-main" id="main">
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Laboratórios</h1>
+      </center>
+
+  </div>
+</div>
+
+</div>
+
+<form action="/novoLab?disc={{ disc_id }}" method="POST" enctype=multipart/form-data>
+    <center>
+    <div style=" width: 1000px; height: 800px; background: #d3d3d3;">
+            <div style="width: 700px; height: 450px; border: 2px solid #607d8b; border-radius:20px; background: white; margin-top: 50px;">
+                <br>
+                <p class="textotopo" style="margin-left: -5px"><font face="verdana" color="#009688" size="6">Novo Laboratório</font></p>
+
+                <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" >Título:</font></p>
+                <input type="text" name="Titulo" placeholder="Título do Laboratório" class="formulariologin">
+
+                <br>
+
+                   <font face="verdana" color="#009688" style="margin-left: -529px" >Data de entrega:</font>
+                    <br>
+                    <input type="date" name="dataentrega" style="margin-left: -425px; width: 200px" class="formulariologin">
+
+
+                <br>
+
+                    <font face="verdana" color="#009688" style="margin-left: -600px; "  > Anexo: </font>
+                     <input type="file" name="file" style="margin-top: 10px; margin-left: -260px" />
+
+                <br>
+                     <font face="verdana" color="#009688" style="margin-left: -385px; "  > Tornar visível para alunos: </font>
+                    <input type="checkbox" name="Visivel"> Vísivel
+
+
+                <br><br><br>
+                 <button type="submit" class="btn btn-default" style="margin-top: -20px" > Adicionar </button>
+
+
+            </div>
+
+    </div>
+    </center>
+
+</form>
+
+
+
+
+{%  endblock %}

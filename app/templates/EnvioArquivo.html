@@ -1,0 +1,50 @@
+{%  extends 'cabecalho.html' %}
+
+{% block title %} Cadastro{% endblock %}<!-- Se já houver outro block title na parte base, será sobregravado, mas se vc colocar
+                                            a função super, vc concatena o original com o que vc quer colocar-->
+
+
+{%  block content %}
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal" >
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Envios</h1>
+      </center>
+
+  </div>
+</div>
+
+<center>
+<div style=" width: 1000px; height: 500px; background: #d3d3d3  ;">
+        <div style="width: 700px; height: 350px; border: 2px solid #607d8b; border-radius:20px; background: white; margin-top: 50px;">
+
+            <p class="textotopo"><font face="verdana" color="#009688" size="6"> Novo arquivo</font></p>
+            <p class="texto"><font face="verdana" color="#009688" > Titulo:</font></p>
+            <input type="text" name="Nome" size="70"  placeholder="Titulo do arquivo" class="formulariologin"/>
+
+
+            <br>
+            <form action="/action_page.php" style=" margin-left: 20px; text-align: left;">
+               <font face="verdana" color="#009688" > Data de entrega:</font> <input type="date" name="dataentrega">
+                 <input type="button" value="Adicionar">
+            </form>
+
+            <br>
+
+            <form enctype="multipart/form-data" style=" margin-left: 20px; text-align: left;">
+                <font face="verdana" color="#009688" > Anexo: </font> <input type="file" name="imagem"/>
+            </form>
+
+            <br><br>
+            <input type="button" value="Submeter">
+
+        </div>
+
+</div>
+</center>
+
+{% endblock %}

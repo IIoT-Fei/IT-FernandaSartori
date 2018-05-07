@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask.json import jsonify
+from flask.json import jsonify, dumps
 
 from app import app
 from flask_login import login_user, logout_user
@@ -8,7 +8,7 @@ from app import db  # do módulo app (pasta app) importo a variável app do __in
 from flask import render_template, request, session
 from flask import flash
 from flask import redirect, url_for
-from app.models.forms import LoginForm, Cadastro, Submissões, Novadisciplina, NovoConvite, EdtDisc, Perfil
+from app.models.forms import LoginForm, Cadastro, Submissoes, Novadisciplina, NovoConvite, EdtDisc, Perfil
 from app.models.tables import User, Lab, Disciplina, Convite, Envios, User_Disciplina  # importei a tabela Users
 from app import lm
 from datetime import datetime
@@ -17,7 +17,7 @@ import os
 from flask import Flask
 from werkzeug.utils import secure_filename
 # from flask.ext.images import resized_img_src
-
+from werkzeug.datastructures import CombinedMultiDict
 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'zip', 'rar', 'png', 'jpg', 'docx'])
@@ -271,12 +271,13 @@ def edicao():
 
 @app.route("/enviosub", methods=["GET", "POST"])
 def envsub():
-    form = Submissões(request.form)
+    form = Submissoes(CombinedMultiDict((request.files, request.form)))
     lab = Lab.query.filter_by(id=1).first()
     env = Envios.query.filter_by(cod_lab=1).all()
     id_ = request.args.get("lab_id")
     disc_id = request.args.get("disc_id")
     r = Lab.query.filter_by(id=id_).first()
+
     if disc_id == None:
         return "<h1>Not Found</h1> " \
         "<h4> <p>The requested URL was not found on the server. " \
@@ -284,96 +285,55 @@ def envsub():
     else:
         #u_s = User_Disciplina.query.filter(and_(User_Disciplina.cod_user == session['user'], User_Disciplina.cod_dis == disc_id)).first_or_404()
         user= User.query.filter_by(id=session['user']).first()
+        ud = User_Disciplina.query.filter_by(cod_user = user).all()
 
-        envios = Envios.query.filter(and_(Envios.cod_lab == id_, Envios.cod_user == session['user'])).all()
+        if disc_id in ud.cod_dis:
+            envios = Envios.query.filter(and_(Envios.cod_lab == id_, Envios.cod_user == session['user'])).all()
+            print(form.data)
 
+            if form.validate_on_submit():
+                print("PASSOU!!!")
 
-        if form.validate_on_submit():
-
-
-            if user.professor == False:
-
+                #if user.professor == False:
                 u_s = User_Disciplina.query.filter(and_(User_Disciplina.cod_user == session['user'], User_Disciplina.cod_dis == disc_id)).first_or_404()
                 u_d= Lab.query.filter(and_(Lab.id == id_, Lab.disciplina_id == disc_id)).first_or_404()
                 r = Lab.query.filter_by(id=id_).first()  # estou selecionandos todos os registros filtrados por um campo
                 u = Envios.query.filter_by(cod_lab=id_).all()
 
                 envios = Envios.query.filter(and_(Envios.cod_lab == id_, Envios.cod_user == session['user'])).all()
-                #language = ['C', 'C++', 'Java', 'Python']
 
                 UPLOAD_FOLDER = './submissões/'
                 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-                #print(session['user'])
+                linguagem = form.linguagem.data
 
-                if request.method == 'POST':
+                now = datetime.now()
+                file = request.files['arquivo']
 
-                    linguagem = form.linguagem.data
+                if file.filename == '':
+                    print("não selecionado")
 
-                    now = datetime.now()
-                    file = request.files['file']
+                if file:
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    print(3)
+                    print(form.data)
+                    lab = Envios("Aprovado", "---", session['user'], id_, now, filename,linguagem)  # passando os parametros que quero inserir
+                    db.session.add(lab)
+                    db.session.commit()
+                    r = Lab.query.filter_by(id=id_).first()  # estou selecionandos todos os registros filtrados por um campo
 
-                    if file and allowed_file_submission(file.filename) == False:
-                        print("incompatível")
-
-                    if file.filename == '':
-                        print("não selecionado")
-
-                    if file and allowed_file_submission(file.filename):
-                        filename = secure_filename(file.filename)
-                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                        print(3)
-                        #nomearq = "envio="+""
-                        lab = Envios("Aprovado", "---", session['user'], id_, now, filename,linguagem)  # passando os parametros que quero inserir
-                        db.session.add(lab)
-                        db.session.commit()
-                        r = Lab.query.filter_by(id=id_).first()  # estou selecionandos todos os registros filtrados por um campo
-
-                        return redirect(url_for("envsub", lab_id=id_, disc_id=disc_id), form=form)
 
             else:
-                u_s = Disciplina.query.filter(and_(Disciplina.id_prof == session['user'], Disciplina.id == disc_id)).first_or_404()
-                u_d = Lab.query.filter(and_(Lab.id == id_, Lab.disciplina_id == disc_id)).first_or_404()
-                r = Lab.query.filter_by(id=id_).first()  # estou selecionandos todos os registros filtrados por um campo
-                u = Envios.query.filter_by(cod_lab=id_).all()
-                envios = Envios.query.filter(and_(Envios.cod_lab == id_, Envios.cod_user == session['user'])).all()
-                language = ['C', 'C++', 'Java', 'Python']
+                print("Formulario novo ou erros")
+                print(form.data)
 
-                UPLOAD_FOLDER = './submissões/'
-                app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-                # print(session['user'])
-                if request.method == 'POST':
-
-                    linguagem = form.linguagem.data
-
-                    print(linguagem)
-
-                    now = datetime.now()
-                    file = request.files['file']
-
-                    if file and allowed_file_submission(file.filename) == False:
-                        print("incompatível")
-                    # if user does not select file, browser also
-                    # submit a empty part without filename
-                    if file.filename == '':
-                        print("não selecionado")
-                    if file and allowed_file_submission(file.filename):
-                        filename = secure_filename(file.filename)
-                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                        print(3)
-                        lab = Envios("Aprovado", "---", session['user'], id_, now, filename,
-                                     linguagem)  # passando os parametros que quero inserir
-                        db.session.add(lab)
-                        db.session.commit()
-                        r = Lab.query.filter_by(id=id_).first()  # estou selecionandos todos os registros filtrados por um campo
-                        #envios = Envios.query.filter(and_(Envios.cod_lab == id_, Envios.cod_user == session['user'])).all()
-                        return redirect(url_for("envsub", lab_id=id_, disc_id=disc_id), form=form)
         else:
-            print("errosssss")
-            print(form.errors)
+            return "<h1>Not Found</h1> " \
+                   "<h4> <p>The requested URL was not found on the server. " \
+                   "If you entered the URL manually please check your spelling and try again.</h4> </p>"
 
-        return render_template('EnvioSubmissao.html', lab=r, env=envios, disc_id=disc_id, form=form)
+    return render_template('EnvioSubmissao.html', lab=r, env=envios, disc_id=disc_id, form=form)
 
 def checaProfessor(controller):
     @wraps(controller)

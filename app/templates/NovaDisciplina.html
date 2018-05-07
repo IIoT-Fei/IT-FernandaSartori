@@ -1,0 +1,112 @@
+{%  extends 'cabecalho.html' %}
+{%  block content %}
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal" >
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Nova Disciplina</h1>
+      </center>
+
+  </div>
+</div>
+
+<center>
+<form action="/NovaDiscp" method="POST" enctype=multipart/form-data>
+
+    <div class="espaco">
+         {{ form.csrf_token }}
+        <div class="inscricao" style="height: 650px">
+
+            <p class="textotopo" style="margin-left: -5px; margin-top: 15px">
+                <font face="verdana" color="#009688" size="6">
+                    Nova Disciplina
+                </font>
+            </p>
+            <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" > Código da Disciplina:</font></p>
+             <!--<input type="text" name="Titulo" size="70"  placeholder="Código da Disciplina" class="formulariologin" />-->
+                {{ form.codigo(class="formulariologin", placeholder="Código da disciplina") }}<!--passo a classe para estilizar a caixa de texto -->
+
+
+                    {% if form.errors.codigo %}
+                        <div class="mensagemerro">
+                            <ul>
+                            {% for e in form.errors.codigo %} <!--Um for para exibir em lista os erros-->
+                                <li>{{ e }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+
+            <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" > Nome da Disciplina:</font></p>
+             <!--<input type="text" name="Nome" size="70"  placeholder="Nome da Disciplina" class="formulariologin" />-->
+                {{ form.nome(class="formulariologin", placeholder="Título da disciplina") }}<!--passo a classe para estilizar a caixa de texto -->
+
+
+                    {% if form.errors.nome %}
+                        <div class="mensagemerro">
+                            <ul>
+                            {% for e in form.errors.nome %} <!--Um for para exibir em lista os erros-->
+                                <li>{{ e }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+            <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" > Escolher chave de acesso da Disciplina:</font></p>
+             <!--<input type="password" name="Chave" size="70"  placeholder="Escolher chave de acesso da disciplina" class="formulariologin" />-->
+                    {{ form.chave(class="formulariologin", placeholder="Escolher chave de acesso da Disciplina") }}<!--passo a classe para estilizar a caixa de texto -->
+
+
+                    {% if form.errors.chave %}
+                        <div class="mensagemerro">
+                            <ul>
+                            {% for e in form.errors.chave %} <!--Um for para exibir em lista os erros-->
+                                <li>{{ e }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+            <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" > Confirmar chave de acesso da Disciplina:</font></p>
+             <!--<input type="password" name="Confchave" size="70"  placeholder="Escolher chave de acesso da disciplina" class="formulariologin" />-->
+
+            {{ form.conf_chave(class="formulariologin", placeholder="Confirmar chave de acesso da Disciplina") }}<!--passo a classe para estilizar a caixa de texto -->
+
+
+                    {% if form.errors.conf_chave %}
+                        <div class="mensagemerro">
+                            <ul>
+                            {% for e in form.errors.conf_chave %} <!--Um for para exibir em lista os erros-->
+                                <li>{{ e }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+
+             <p style="margin-top: 10px">
+
+             <font face="verdana" color="#009688" style="margin-left: -450px; margin-top: 10px"  > Escolher Logo da Disciplina: </font>
+
+                    <p style="margin-left: -260px"><input type=file name=file>
+
+
+            </p>
+
+            <p style="margin-top: 15px; margin-left: -340px">
+                     {{ form.visivel }} Tornar Disciplina visível para alunos
+
+            </p>
+
+            <input type="submit" value="Criar" class="formulariologin" style="width: 100px; margin-top: 25px">
+
+
+        </div>
+
+    </div>
+</form>
+</center>
+{% endblock %}

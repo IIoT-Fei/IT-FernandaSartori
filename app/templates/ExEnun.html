@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+ <meta charset="UTF-8">
+<title>ExerEnunciado</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="estilos.css">
+<link rel="stylesheet" href="style.css">
+<body bgcolor="#d3d3d3">
+
+<style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 95%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+
+<div class="w3-sidebar w3-bar-block w3-card-2 w3-animate-left" style="display:none" id="mySidebar" style=" display: table-cell; vertical-align:middle;">
+    <center>
+   <button class="w3-bar-item w3-button w3-large" onclick="w3_close()">Close &times;</button>
+  <a href="Login.html" class="w3-bar-item w3-button"><center><img src="Logo.png" style="width: 100px; height: 170px";></center></a>
+  <a href="View.html" class="w3-bar-item w3-button">Home</a>
+  <a href="View.html" class="w3-bar-item w3-button">Disciplinas</a>
+  <a href="Prefil.html" class="w3-bar-item w3-button">Perfil</a>
+  <a href="Cadastro.html" class="w3-bar-item w3-button">Cadastro</a>
+  <a href="Agradecimentos.html" class="w3-bar-item w3-button">Agradecimentos</a>
+
+    </center>
+</div>
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container" VALIGN="MIDDLE" ALIGN="CENTER" >
+        <h1>Exercício</h1>
+  </div>
+</div>
+
+</div>
+
+<center>
+<div id="epsaco">
+        <div style=" width: 900px; height: 510px; border: 2px solid #607d8b; border-radius:20px; background: white; margin-top: 50px;">
+
+             <p class="textotopo" style="margin-left: -550px"><font face="verdana" color="#009688" size="6"> Entrega Código</font></p>
+
+                Enunciado  Enunciado  Enunciado  Enunciado  Enunciado  Enunciado Enunciado Enunciado Enunciado  Enunciado
+                Enunciado Enunciado  Enunciado Enunciado Enunciado Enunciado Enunciado Enunciado Enunciado Enunciado Enunciado
+                Enunciado Enunciado Enunciado Enunciado Enunciado Enunciado Enunciado Enunciado Enunciado
+
+                <table style="margin-top: 20px">
+                      <tr>
+                        <td>Status de envio</td>
+                        <td>Nenhuma Tentativa</td>
+
+                      </tr>
+                      <tr>
+                        <td>Data de entrega</td>
+                        <td>Friday, 20 Oct 2017, 23:55</td>
+
+                      </tr>
+                      <tr>
+                        <td>Tempo Restante</td>
+                        <td>4 dias ( horas</td>
+
+                      </tr>
+                      <tr>
+                        <td>Última modificação</td>
+                        <td>--</td>
+
+                      </tr>
+
+                      <tr>
+                        <td>Envios de arquivos </td>
+                        <td>--</td>
+
+                       </tr>
+
+                </table>
+
+                <br>
+                 <div style="margin-left: -555px; ">
+                    <font face="verdana" color="#009688"><h6 style=" margin: 0; padding: 0px;">Linguagem</h6></font>
+
+                            <select id="linguagem" name="linguagem" style="width: 290px; height: 30px; display: inline-block; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                                <option value="c">C</option>
+                                <option value="c++">C++</option>
+                                <option value="java">Java</option>
+                                <option value="python">Python</option>
+                            </select>
+
+                </div>
+            <br>
+                 <form enctype="multipart/form-data" style=" margin-left: 28px; text-align: left;">
+                    <font face="verdana" color="#009688" > Anexo: </font> <input type="file" name="imagem"/>
+                 </form>
+
+
+
+        </div>
+
+</div>
+</center>
+
+
+<script>
+function w3_open() {
+  document.getElementById("main").style.marginLeft = "25%";
+  document.getElementById("mySidebar").style.width = "25%";
+  document.getElementById("mySidebar").style.display = "block";
+  document.getElementById("openNav").style.display = 'none';
+}
+function w3_close() {
+  document.getElementById("main").style.marginLeft = "0%";
+  document.getElementById("mySidebar").style.display = "none";
+  document.getElementById("openNav").style.display = "inline-block";
+}
+</script>
+
+</body>
+</html>

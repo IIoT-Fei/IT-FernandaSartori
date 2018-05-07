@@ -1,0 +1,72 @@
+{%  extends 'cabecalho.html' %}
+
+{%  block content %}
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal" >
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Edições</h1>
+      </center>
+
+  </div>
+</div>
+<form action="/edicao?disc={{ disciplina.id }}" method="POST" enctype=multipart/form-data>
+    <center>
+    <div id="espaco">
+        {{ form.csrf_token }}
+            <div style="width: 750px; height: 530px; border: 2px solid #607d8b; border-radius:20px; background: white; margin-top: 50px;">
+
+                <p class="textotopo" style="margin-top: 10px"><font face="verdana" color="#009688" size="6" > Edição de Disciplina</font></p>
+                <p class="texto"><font face="verdana" color="#009688" > Código da disciplina:</font></p>
+                <input type="text" name="Nome" size="70"  value="{{ disciplina.codigo_disc }}" class="formulariologin" disabled="disabled"/>
+
+
+                <p class="texto" style="margin-top: 15px"><font face="verdana" color="#009688" style="margin-top: 5px"> Título da Disciplina:</font></p>
+                <input type="text" name="Titulo" size="70"  value="{{ disciplina.nome_disc }}" class="formulariologin" />
+
+                {{ form.titulo(class="formulariologin")}}<!--passo a classe para estilizar a caixa de texto -->
+
+                            {% if form.errors.titulo %}
+                                <div class="mensagemerro">
+                                    <ul>
+                                    {% for e in form.errors.titulo %} <!--Um for para exibir em lista os erros-->
+                                        <li>{{ e }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+
+
+                <p class="texto" style="margin-top: 15px"><font face="verdana" color="#009688" > Chave de acesso:</font></p>
+                <!--<input type="password" name="Chave" size="70"  value="{{ disciplina.chave }}" class="formulariologin"/>-->
+                {{ form.chave(class="formulariologin", value="{{ disciplina.nome_disc }}") }}<!--passo a classe para estilizar a caixa de texto -->
+
+                            {% if form.errors.chave %}
+                                <div class="mensagemerro">
+                                    <ul>
+                                    {% for e in form.errors.chave %} <!--Um for para exibir em lista os erros-->
+                                        <li>{{ e }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+
+                <br>
+                    <font face="verdana" color="#009688" style="margin-left: -550px;" >
+                        Logo da disciplina:
+                    </font>
+
+                    <input type="file" name="file" style="margin-top: 10px; margin-left: -300px"/>
+
+                <br>
+                <input type="submit" value="Salvar" class="formulariologin" style="width: 100px">
+
+            </div>
+
+    </div>
+    </center>
+</form>
+{% endblock %}

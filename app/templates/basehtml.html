@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+     <link rel="stylesheet" href="{{ url_for('static', filename="css/bootstrap.min.css") }}">
+     <link rel="stylesheet" href="{{ url_for('static', filename="css/estilos.css")}}">
+     <link rel="stylesheet" href="{{ url_for('static', filename="css/style.css")}}">
+</head>
+<body bgcolor="#d3d3d3">
+
+
+       {% block content  %} <!--aqui que será inserido a especificação de cada pag-->
+
+
+
+        {% endblock %}
+
+
+</body>
+</html>
