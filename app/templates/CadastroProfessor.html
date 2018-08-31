@@ -1,0 +1,123 @@
+{%  extends 'cabecalho.html' %}
+
+{% block title %} Cadastro{% endblock %}<!-- Se já houver outro block title na parte base, será sobregravado, mas se vc colocar
+                                            a função super, vc concatena o original com o que vc quer colocar-->
+
+
+{%  block content %}
+
+
+<div zclass="w3-main" id="main">
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Cadastro</h1>
+      </center>
+
+  </div>
+</div>
+
+</div>
+
+<form action="/cadastro" method="POST">
+    {{ form.csrf_token }} <!-- Campo de segurança, para permitir que o formulário seja válidado  -->
+    <center>
+    <div style=" width: 1000px; height: 800px; background: #d3d3d3;">
+            <div style="width: 700px; height: 650px; border: 2px solid #607d8b; border-radius:20px; background: white; margin-top: 50px;">
+                <br>
+                <p class="textotopo" style="margin-left: -5px"><font face="verdana" color="#009688" size="6">Cadastro</font></p>
+
+
+                <p class="texto"><font face="verdana" color="#009688" > Nome de usuário:</font></p>
+                 <!--   <input type="text" name="NomeUser" size="70"  placeholder="Nome de usuário" class="formulariologin"/>-->
+
+                    {{ form.username(class="formulariologin", placeholder="Nome de Usuário") }}<!--passo a classe para estilizar a caixa de texto -->
+
+
+                    {% if form.errors.username %}
+                        <div class="mensagemerro">
+                            <ul>
+                            {% for e in form.errors.username %} <!--Um for para exibir em lista os erros-->
+                                <li>{{ e }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+
+
+                <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" >Nome Completo:</font></p>
+                    <!--<input type="text" name="Nome" size="70"  placeholder="Nome Completo" class="formulariologin" />-->
+
+                    {{ form.name(class="formulariologin", placeholder="Nome completo") }}<!--passo a classe para estilizar a caixa de texto -->
+
+                    {% if form.errors.name %}
+                        <div class="mensagemerro">
+                            <ul>
+                            {% for e in form.errors.name %} <!--Um for para exibir em lista os erros-->
+                                <li>{{ e }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" >E-mail:</font></p>
+                    <!--<input type="text" name="Email" size="70"  placeholder="E-mail" class="formulariologin" />-->
+                    {{ form.email(class="formulariologin", placeholder="E-mail") }}<!--passo a classe para estilizar a caixa de texto -->
+
+                    {% if form.errors.email %}
+                        <div class="mensagemerro">
+                            <ul>
+                            {% for e in form.errors.email %} <!--Um for para exibir em lista os erros-->
+                                <li>{{ e }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+
+                <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" >Senha:</font></p>
+                    <!--<input type="password" name="Senha" size="70"  placeholder="Senha" class="formulariologin"/>-->
+                    {{ form.password(class="formulariologin", placeholder="Usuário") }}<!--passo a classe para estilizar a caixa de texto -->
+
+                    {% if form.errors.password %}
+                        <div class="mensagemerro">
+                            <ul>
+                            {% for e in form.errors.password %} <!--Um for para exibir em lista os erros-->
+                                <li>{{ e }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+
+                <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" >Confirmar Senha:</font></p>
+                    <!--<input type="password" name="ConfSenha" size="70"  placeholder="Confirmar Senha" class="formulariologin"/>-->
+                    {{ form.conf_password(class="formulariologin", placeholder="Usuário") }}<!--passo a classe para estilizar a caixa de texto -->
+
+                    {% if form.errors.conf_password %}
+                       <div class="mensagemerro">
+                            <ul>
+                            {% for e in form.errors.conf_password %} <!--Um for para exibir em lista os erros-->
+                                <li>{{ e }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                <br><br>
+                 <button type="submit" class="formulariologin" style="margin-top: -20px; width: 100px" > Cadastrar </button>
+
+
+            </div>
+
+    </div>
+    </center>
+
+</form>
+
+
+
+
+{%  endblock %}

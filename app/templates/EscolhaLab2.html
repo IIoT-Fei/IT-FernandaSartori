@@ -1,0 +1,103 @@
+{%  extends 'cabecalho.html' %}
+
+{% block title %} Cadastro{% endblock %}<!-- Se já houver outro block title na parte base, será sobregravado, mas se vc colocar
+                                            a função super, vc concatena o original com o que vc quer colocar-->
+
+
+{%  block content %}
+
+
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container" VALIGN="MIDDLE" ALIGN="CENTER" >
+        <h1>Laboratórios </h1>
+  </div>
+</div>
+
+<style>
+
+.vertical-menu {
+    width: 1000px;
+    margin-top: 70px;
+}
+
+.vertical-menu a {
+
+    color: black;
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+    height: 80px;
+    width: 300px;
+
+}
+
+.espaco div:hover {
+    background-color: #ccc;
+
+}
+</style>
+
+<form action="" method="post">
+    <center>
+    <div class="espaco">
+
+            <div class="vertical-menu" style="margin-left: 200px; margin-top: 20px">
+
+              <div style="margin-left: -400px; width: 600px;height: 100px;">
+
+                  <a href="{{ url_for('novoLab') }}?disc={{ disc_id }}" style="width: 150px; margin-left: -350px">
+
+                  <font face="verdana" color="#009688" size="5" style="" >
+                      Novo Lab
+                  </font>
+              </a>
+                <hr style="height:1px; border:none; color:#000; background-color:#607d8b; margin-top: -10px;"/>
+              </div>
+            </div>
+
+
+        {% for i in lab  %}
+
+             <div style="margin-left: 00px; width: 600px;height: 100px;; margin-top: 10px; " >
+                <a href="{{ url_for('envsub') }}?disc_id={{ disc_id }}&lab_id={{ i.id }}" style="width: 150px; margin-left: -400px;">
+
+                  <font face="verdana" color="#009688" size="5" style="margin-top: -1000px" >
+                      {{  i.titulo }}
+                  </font>
+                </a>
+
+                <hr style="height:1px; border:none; color:#000; background-color:#607d8b; margin-top: 30px"/>
+
+             <div style="width: 200px; height: 50px; margin-top: -80px; margin-left: 390px">
+                    <a href="{{ url_for('editarLab') }}?lab_id={{ i.id }}&disc_id={{ disc_id }}" style="width: 50px; height: 50px; margin-left: -100px; ">
+                        <img src="{{url_for('static', filename='Novo.png')}}" title="Editar Laboratório"  style="margin-bottom: 5px; width:40px; height:30px; margin-top: 10px"/>
+                    </a>
+
+                    <a href="{{ url_for('excluirlab') }}?lab_id={{ i.id }}&disc_id={{ disc_id }}">
+                        <img src="{{url_for('static', filename='delete_remove_bin_icon-icons.com_72400.png')}}" title="Excluir Discplina" style="width:40px; height:40px; margin-bottom: 5px; margin-top: 10px; margin-left: 0px"/>
+                    </a>
+                 {% if i.visivel == True %}
+                    <a href="{{ url_for('deixarlabinv') }}?lab_id={{ i.id }}&disc_id={{ disc_id }}" class="mybtn">
+                        <img src="{{url_for('static', filename='2000px-Eye_open_font_awesome.svg.png')}}" title="Tornar visível somente para Professores"  class="mostrarparaaluno" style="margin-bottom: 2px; height: 40px; margin-top: 7px; margin-left: 0px; background-color: transparent"/>
+                    </a>
+                 {% else %}
+                    <a href="{{ url_for('deixarlabinv') }}?lab_id={{ i.id }}&disc_id={{ disc_id }}" class="mybtn">
+                        <img src="{{url_for('static', filename='Eye_close_font_awesome.svg.png')}}" title="Tornar visível para Professores e Alunos"  class="mostrarparaaluno" style="margin-bottom: 2px; height: 40px; margin-top: 9px; margin-left: 0px; background-color: transparent"/>
+                    </a>
+                 {% endif %}
+             </div>
+            </div>
+
+{% endfor %}
+
+
+
+    </div>
+    </center>
+</form>
+
+{%  endblock %}

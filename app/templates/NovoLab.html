@@ -1,0 +1,137 @@
+{%  extends 'cabecalho.html' %}
+
+{% block title %} Cadastro{% endblock %}<!-- Se já houver outro block title na parte base, será sobregravado, mas se vc colocar
+                                            a função super, vc concatena o original com o que vc quer colocar-->
+
+
+{%  block content %}
+
+
+<div zclass="w3-main" id="main">
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Laboratórios</h1>
+      </center>
+
+  </div>
+</div>
+
+</div>
+
+<form action="/novoLab?disc={{ disc_id }}" method="POST" enctype=multipart/form-data>
+
+
+
+    <center>
+
+    <div style=" width: 1000px; height: 800px; background: #d3d3d3;">
+    {{ form.csrf_token }}
+            <div style="width: 700px; height: 1600px; border: 2px solid #607d8b; border-radius:20px; background: white; margin-top: 50px;">
+               <br>
+               <p class="textotopo" style="margin-left: -5px"><font face="verdana" color="#009688" size="6">Novo Laboratório</font></p>
+
+                <p class="texto" style="margin-top: 5px"><font face="verdana" color="#009688" >Título:</font></p>
+                {{ form.titulo(class="formulariologin", placeholder="Título do Laboratório") }}<!--passo a classe para estilizar a caixa de texto -->
+
+                {% if form.errors.titulo %}
+                        <div class="mensagemerro">
+                            <ul>
+                            {% for e in form.errors.titulo %} <!--Um for para exibir em lista os erros-->
+                                <li>{{ e }}</li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                <br>
+
+                <font face="verdana" color="#009688" style="margin-left: -529px" >Data de entrega:</font>
+
+                <br>
+                <!--<input type="date" name="dataentrega" style="margin-left: -425px; width: 200px" class="formulariologin">-->
+
+                {{ form.data (class="formulariologin", type="datetime-local",style="margin-left: -400px; width: 230px; margin-top: 5px") }}
+                    {% if form.errors.data %}
+                            <br>
+                            <div class="mensagemerro">
+                                <ul>
+                                {% for e in form.errors.data %} <!--Um for para exibir em lista os erros-->
+                                    <li>{{ e }}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                    {% endif %}
+                <br>
+
+               <font face="verdana" color="#009688" style="margin-left: -600px; "  > Anexo: </font>
+
+                {{ form.arquivo (class="margem3")}}
+                    {% if form.errors.arquivo %}
+                            <br>
+                            <div class="mensagemerro">
+                                <ul>
+                                {% for e in form.errors.arquivo %} <!--Um for para exibir em lista os erros-->
+                                    <li>{{ e }}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                <br>
+                <font face="verdana" color="#009688" style="margin-left: -385px; "  > Tornar visível para alunos: </font>
+                {{ form.visivel }}
+
+                <br><br><br><br>
+
+                <font face="verdana" color="#009688" style="margin-left: -530px; " size="5" > Correção: </font>
+                <br><br>
+                <font face="verdana" color="#009688" style="margin-left: -310px; "  > Adicione a saída esperada para comparação: </font>
+                <br><br>
+
+                <!--<textarea style="resize: none; width: 600px; height: 300px; " class="formulariologin"></textarea>-->
+                {{ form.comparacao (class = "formulariologin", style=" width: 600px; height: 300px") }}
+                {% if form.errors.comparacao %}
+                            <br>
+                            <div class="mensagemerro">
+                                <ul>
+                                {% for e in form.errors.comparacao %} <!--Um for para exibir em lista os erros-->
+                                    <li>{{ e }}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                    {% endif %}
+                <br><br>
+
+                <font face="verdana" color="#009688" style="margin-left: -355px; "  > Correção por substituição de códigos: </font>
+                {{ form.substituicao }}
+                <br><br>
+                <font face="verdana" color="#009688" style="margin-left: -445px; "  > Adicione a sáida esperada: </font>
+                <br><br>
+
+                {{ form.codigo (class = "formulariologin", style=" width: 600px; height: 300px") }}
+                {% if form.errors.codigo %}
+                                <br>
+                                <div class="mensagemerro">
+                                    <ul>
+                                    {% for e in form.errors.codigo %} <!--Um for para exibir em lista os erros-->
+                                        <li>{{ e }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                </div>
+                {% endif %}
+                <br><br><br>
+
+               <input type="submit" value="Criar" class="formulariologin" style="width: 100px; margin-top: 25px">
+
+            </div>
+
+    </div>
+    </center>
+
+</form>
+
+
+{%  endblock %}

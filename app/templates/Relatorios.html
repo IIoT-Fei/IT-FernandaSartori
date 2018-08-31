@@ -1,0 +1,109 @@
+{%  extends 'cabecalho.html' %}
+
+{% block title %} Cadastro{% endblock %}<!-- Se já houver outro block title na parte base, será sobregravado, mas se vc colocar
+                                            a função super, vc concatena o original com o que vc quer colocar-->
+
+
+{%  block content %}
+
+
+<div zclass="w3-main" id="main">
+
+<div class="w3-teal">
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Relatórios</h1>
+      </center>
+
+  </div>
+</div>
+
+</div>
+
+
+    <style>
+#customers {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 00px;
+}
+
+#customers td, #customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+#customers tr:nth-child(even){
+    background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #8c8c8c;}
+
+#customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #757575;
+    color: white;
+}
+</style>
+
+<form action="" method="POST">
+
+    <center>
+    <div style=" width: 1000px; height: 800px; background: #d3d3d3;">
+            <div style="width: 800px; height: 450px; background: #d3d3d3; margin-top: 50px; overflow: auto">
+
+            {% if qtdalunos != 0 %}
+               <table id="customers">
+                  <tr>
+                    <th> </th>
+
+                     {% for i in labs %}
+
+                      <th>{{ i.titulo }}</th>
+
+                     {% endfor %}
+                  <th> % Aprovado</th>
+                  <th> % Reprovado</th>
+                  <th> % Nenhuma Tent.</th>
+                  </tr>
+
+
+               {% for valuno in dados %}
+                    <tr>
+                        <td> {{  alunos[loop.index0].user.name }} </td>
+                    {% set d={"t_aprov": 0, "t_reprov": 0, "t_nenhuma":0}  %}
+                        {%   for labStatus in valuno %}
+                                {% if labStatus == 0 %}
+                                    <td>Aprovado</td>
+                                {% elif labStatus == 1 %}
+                                      <td>Reprovado</td>
+                                {% else %}
+                                     <td>Nenhuma Tentativa</td>
+                                {% endif %}
+                        {% endfor %}
+                        <td>{{ (((totais[loop.index0][0])*100)/qtdlabs) }} </td>
+                        <td>{{ (((totais[loop.index0][1])*100)/qtdlabs) }}</td>
+                        <td>{{ (((totais[loop.index0][2])*100)/qtdlabs) }}</td>
+
+                    </tr>
+               {% endfor %}
+
+                </table>
+                {% else %}
+                    <font face="verdana" color="#009688" size="5" style="margin-left: 0px; margin-top: 150px">
+                        Nenhum aluno inscrito nessa disciplina
+                    </font>
+
+            {% endif %}
+            </div>
+
+    </div>
+    </center>
+
+</form>
+
+
+{%  endblock %}

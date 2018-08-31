@@ -1,0 +1,39 @@
+{%  extends 'cabecalho.html' %}
+
+{%  block content %}
+
+<div zclass="w3-main" id="main"></div>
+
+<div class="w3-teal" >
+  <button class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+  <div class="w3-container">
+      <center>
+          <h1>Envios</h1>
+      </center>
+
+  </div>
+</div>
+
+<style>
+td, th {
+    border: 1px solid #dddddd;
+    text-align: center;
+    padding: 8px;
+    width: 300px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+
+
+   <h1>Upload new File</h1>
+    <form method=post enctype=multipart/form-data>
+      <p><input type=file name=file>
+         <input type=submit value=Upload>
+    </form>
+
+
+
+{% endblock %}

@@ -1,14 +1,15 @@
 from functools import wraps
 
-from flask.json import jsonify
-
+from flask.json import jsonify, dumps
+import numpy as np
 from app import app
 from flask_login import login_user, logout_user
 from app import db  # do módulo app (pasta app) importo a variável app do __init__
-from flask import render_template, request, session
+from flask import render_template, request, session, send_from_directory, current_app
 from flask import flash
 from flask import redirect, url_for
-from app.models.forms import LoginForm, Cadastro, Submissões, Novadisciplina, NovoConvite, EdtDisc, Perfil
+from app.models.forms import LoginForm, Cadastro, Submissoes, Novadisciplina, NovoConvite, EdtDisc, Perfil, NovoLab, \
+    EdtLab
 from app.models.tables import User, Lab, Disciplina, Convite, Envios, User_Disciplina  # importei a tabela Users
 from app import lm
 from datetime import datetime
@@ -17,7 +18,7 @@ import os
 from flask import Flask
 from werkzeug.utils import secure_filename
 # from flask.ext.images import resized_img_src
-
+from werkzeug.datastructures import CombinedMultiDict
 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'zip', 'rar', 'png', 'jpg', 'docx'])
@@ -124,6 +125,28 @@ def home():
         return redirect(url_for("homealuno"))
 
 
+def checaProfessor(controller):
+    @wraps(controller)
+    def pacote():
+        if ehProfessor():
+            return controller()
+        else:
+            return "<h1>Not Found</h1> " \
+                   "<h4> <p>The requested URL was not found on the server. " \
+                   "If you entered the URL manually please check your spelling and try again.</h4> </p>"
+    return pacote
+
+def checaAluno(controller):
+    @wraps(controller)
+    def pacote():
+        if not ehProfessor():
+            return controller()
+        else:
+            return "<h1>Not Found</h1> " \
+                   "<h4> <p>The requested URL was not found on the server. " \
+                   "If you entered the URL manually please check your spelling and try again.</h4> </p>"
+    return pacote
+
 @app.route("/", methods=["GET", "POST"])
 def default():
 
@@ -155,16 +178,16 @@ def agradecimentos():
     return render_template('Agradecimentos.html')
 
 
-@app.route("/cadastroprofessor", methods=["GET", "POST"])
-def cadastroprof():
-    form = LoginForm()
-    #user = User.query.filter_by(id=session['user']).first()
-    #if user.professor == True:
-    return render_template('CadastroProfessor.html', form=form)
-   # else:
-    #    return "<h1>Not Found</h1> " \
-    #           "<h4> <p>The requested URL was not found on the server. " \
-     #          "If you entered the URL manually please check your spelling and try again.</h4> </p>"
+#@app.route("/cadastroprofessor", methods=["GET", "POST"])
+#def cadastroprof():
+#    form = LoginForm()
+#    #user = User.query.filter_by(id=session['user']).first()
+#    #if user.professor == True:
+#    return render_template('CadastroProfessor.html', form=form)
+#   # else:
+#    #    return "<h1>Not Found</h1> " \
+#    #           "<h4> <p>The requested URL was not found on the server. " \
+#     #          "If you entered the URL manually please check your spelling and try again.</h4> </p>"
 
 #@app.route("/envioarquivo", methods=["GET", "POST"])
 #def envioarq():
@@ -173,32 +196,25 @@ def cadastroprof():
 
 @app.route("/cadastro", methods=["GET", "POST"])
 def cadastro():
-    form = Cadastro(request.form)
+    form = Cadastro(CombinedMultiDict((request.files, request.form)))
     #user = User.query.filter_by(id=session['user']).first()
 
     #if user.professor == True:
 
-
     if form.validate_on_submit():
-        if request.method == 'POST':
-            nome_user =  form.username.data
-            nome = form.name.data
-            email = form.email.data
-            senha = form.password.data
-            conf_senha = form.conf_password.data
-            if senha == conf_senha:
-                i = User(nome_user, senha, nome, email, True)
-                db.session.add(i)
-                db.session.commit()
-                session['user'] = i.id
-                return render_template('HomeProf2.html')
-            else:
-                return "Erro ao inserir"
-        # else:
-
-    #    return "<h1>Not Found</h1> " \
-     #          "<h4> <p>The requested URL was not found on the server. " \
-     #          "If you entered the URL manually please check your spelling and try again.</h4> </p>"
+        nome_user =  form.username.data
+        nome = form.name.data
+        email = form.email.data
+        senha = form.password.data
+        conf_senha = form.conf_password.data
+        if senha == conf_senha:
+            i = User(nome_user, senha, nome, email, True)
+            db.session.add(i)
+            db.session.commit()
+            session['user'] = i.id
+            return render_template('HomeProf2.html')
+        else:
+            return "Erro ao inserir"
 
     return render_template('CadastroProfessor.html', form=form)
 
@@ -214,52 +230,66 @@ def logout():
 
 
 @app.route("/edicao", methods=["GET", "POST"])
+@checaLogado
+@checaProfessor
 def edicao():
-    form = EdtDisc(request.form)
+    form = EdtDisc(CombinedMultiDict((request.files, request.form)))
     disc_id = request.args.get("disc")
     disciplina = Disciplina.query.filter_by(id=disc_id).first()
-
-    if ehProfessor():
+    UPLOAD_FOLDER = './app/static/professores/'
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    if disc_id == None:
+        return " iohpeoidjdóij <h1>Not Found</h1> " \
+               "<h4> <p>The requested URL was not found on the server. " \
+               "If you entered the URL manually please check your spelling and try again.</h4> </p>"
+    ud = Disciplina.query.filter(and_(Disciplina.id_prof == session['user'], Disciplina.id == disc_id)).all()
+    if ud:
+        print(00)
         if form.validate_on_submit():
+            print (0)
 
-            UPLOAD_FOLDER = './app/static/'
-            app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+            print("01")
+            novotitulo = form.titulo.data
+            print("02")
+            novachave =  form.chave.data
 
-            if request.method == "POST":
-                novotitulo = form.titulo.data
-                novachave =  form.chave.data
+            print(novachave)
+            file = request.files['arquivo']
+            disciplina.nome_disc = novotitulo
 
-                file = request.files['file']
+            print(1)
 
-                if file and allowed_file(file.filename) == False:
-                    print("incompatível")
+            if file.filename == '':
+                print(2)
+               #print("não selecionado")
+                disciplina.nome_disc = novotitulo
+                if novachave != "":
+                   disciplina.chave = novachave
+                   print(novachave)
 
-                if file.filename == '':
-                    print("não selecionado")
+                db.session.add(disciplina)
+                db.session.commit()
 
-                    disciplina.nome_disc = novotitulo
+                return redirect(url_for("home"))
+
+            elif file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                print(3)
+
+                filename = secure_filename(file.filename)
+
+                disciplina.logo = filename
+                disciplina.nome_disc = novotitulo
+                if novachave != "":
                     disciplina.chave = novachave
-
-                    print(disciplina.nome_disc)
-                    print(disciplina.chave)
-
-                    db.session.add(disciplina)
-                    db.session.commit()
-                    return redirect(url_for("home"))
-
-                if file and allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    print(3)
-
-                    filename = secure_filename(file.filename)
-                    disciplina.logo = filename
-                    disciplina.nome_disc = novotitulo
-                    disciplina.chave = novachave
-
-                    db.session.add(disciplina)
-                    db.session.commit()
-                    return redirect(url_for("home"))
+                    print(novachave)
+                    print(4)
+                db.session.add(disciplina)
+                db.session.commit()
+                return redirect(url_for("home"))
+            else:
+                return redirect(url_for("home"))
 
     else:
         return "<h1>Not Found</h1> " \
@@ -270,226 +300,153 @@ def edicao():
 
 
 @app.route("/enviosub", methods=["GET", "POST"])
+@checaLogado
 def envsub():
-    form = Submissões(request.form)
+    form = Submissoes(CombinedMultiDict((request.files, request.form)))
     lab = Lab.query.filter_by(id=1).first()
     env = Envios.query.filter_by(cod_lab=1).all()
     id_ = request.args.get("lab_id")
     disc_id = request.args.get("disc_id")
-    r = Lab.query.filter_by(id=id_).first()
+    print("disc %s" % disc_id)
+    #r = Lab.query.filter_by(id=id_).first()
+    r = Lab.query.filter(and_(Lab.id== id_, Lab.disciplina_id == disc_id)).first()
+
     if disc_id == None:
-        return "<h1>Not Found</h1> " \
+        return " cwedec <h1>Not Found</h1> " \
         "<h4> <p>The requested URL was not found on the server. " \
         "If you entered the URL manually please check your spelling and try again.</h4> </p>"
     else:
         #u_s = User_Disciplina.query.filter(and_(User_Disciplina.cod_user == session['user'], User_Disciplina.cod_dis == disc_id)).first_or_404()
         user= User.query.filter_by(id=session['user']).first()
+        uda = User_Disciplina.query.filter(and_(User_Disciplina.cod_dis == disc_id, User_Disciplina.cod_user == session['user'])).all()
 
-        envios = Envios.query.filter(and_(Envios.cod_lab == id_, Envios.cod_user == session['user'])).all()
-
-
-        if form.validate_on_submit():
-
-
-            if user.professor == False:
-
-                u_s = User_Disciplina.query.filter(and_(User_Disciplina.cod_user == session['user'], User_Disciplina.cod_dis == disc_id)).first_or_404()
-                u_d= Lab.query.filter(and_(Lab.id == id_, Lab.disciplina_id == disc_id)).first_or_404()
-                r = Lab.query.filter_by(id=id_).first()  # estou selecionandos todos os registros filtrados por um campo
-                u = Envios.query.filter_by(cod_lab=id_).all()
-
-                envios = Envios.query.filter(and_(Envios.cod_lab == id_, Envios.cod_user == session['user'])).all()
-                #language = ['C', 'C++', 'Java', 'Python']
-
-                UPLOAD_FOLDER = './submissões/'
-                app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-                #print(session['user'])
-
-                if request.method == 'POST':
-
-                    linguagem = form.linguagem.data
-
-                    now = datetime.now()
-                    file = request.files['file']
-
-                    if file and allowed_file_submission(file.filename) == False:
-                        print("incompatível")
-
-                    if file.filename == '':
-                        print("não selecionado")
-
-                    if file and allowed_file_submission(file.filename):
-                        filename = secure_filename(file.filename)
-                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                        print(3)
-                        #nomearq = "envio="+""
-                        lab = Envios("Aprovado", "---", session['user'], id_, now, filename,linguagem)  # passando os parametros que quero inserir
-                        db.session.add(lab)
-                        db.session.commit()
-                        r = Lab.query.filter_by(id=id_).first()  # estou selecionandos todos os registros filtrados por um campo
-
-                        return redirect(url_for("envsub", lab_id=id_, disc_id=disc_id), form=form)
-
-            else:
-                u_s = Disciplina.query.filter(and_(Disciplina.id_prof == session['user'], Disciplina.id == disc_id)).first_or_404()
-                u_d = Lab.query.filter(and_(Lab.id == id_, Lab.disciplina_id == disc_id)).first_or_404()
-                r = Lab.query.filter_by(id=id_).first()  # estou selecionandos todos os registros filtrados por um campo
-                u = Envios.query.filter_by(cod_lab=id_).all()
-                envios = Envios.query.filter(and_(Envios.cod_lab == id_, Envios.cod_user == session['user'])).all()
-                language = ['C', 'C++', 'Java', 'Python']
-
-                UPLOAD_FOLDER = './submissões/'
-                app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-                # print(session['user'])
-                if request.method == 'POST':
-
-                    linguagem = form.linguagem.data
-
-                    print(linguagem)
-
-                    now = datetime.now()
-                    file = request.files['file']
-
-                    if file and allowed_file_submission(file.filename) == False:
-                        print("incompatível")
-                    # if user does not select file, browser also
-                    # submit a empty part without filename
-                    if file.filename == '':
-                        print("não selecionado")
-                    if file and allowed_file_submission(file.filename):
-                        filename = secure_filename(file.filename)
-                        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                        print(3)
-                        lab = Envios("Aprovado", "---", session['user'], id_, now, filename,
-                                     linguagem)  # passando os parametros que quero inserir
-                        db.session.add(lab)
-                        db.session.commit()
-                        r = Lab.query.filter_by(id=id_).first()  # estou selecionandos todos os registros filtrados por um campo
-                        #envios = Envios.query.filter(and_(Envios.cod_lab == id_, Envios.cod_user == session['user'])).all()
-                        return redirect(url_for("envsub", lab_id=id_, disc_id=disc_id), form=form)
-        else:
-            print("errosssss")
-            print(form.errors)
-
-        return render_template('EnvioSubmissao.html', lab=r, env=envios, disc_id=disc_id, form=form)
-
-def checaProfessor(controller):
-    @wraps(controller)
-    def pacote():
         if ehProfessor():
-            return controller()
+            udp = Disciplina.query.filter(and_(Disciplina.id == disc_id, Disciplina.id_prof == session['user'])).all()
         else:
-            return "<h1>Not Found</h1> " \
-                   "<h4> <p>The requested URL was not found on the server. " \
-                   "If you entered the URL manually please check your spelling and try again.</h4> </p>"
-    return pacote
+            uda = User_Disciplina.query.filter(
+                and_(User_Disciplina.cod_dis == disc_id, User_Disciplina.cod_user == session['user'])).all()
 
-def checaAluno(controller):
-    @wraps(controller)
-    def pacote():
-        if not ehProfessor():
-            return controller()
+        if (uda and r) or (udp and r):
+            envios = Envios.query.filter(and_(Envios.cod_lab == id_, Envios.cod_user == session['user'])).all()
+            print(form.data)
+
+            if form.validate_on_submit():
+                print("PASSOU!!!")
+
+                user = User.query.filter_by(id=session['user']).first()
+                #if user.professor == False:
+                #u_s = User_Disciplina.query.filter(and_(User_Disciplina.cod_user == session['user'], User_Disciplina.cod_dis == disc_id)).first()
+                #u_d= Lab.query.filter(and_(Lab.id == id_, Lab.disciplina_id == disc_id)).first()
+                r = Lab.query.filter_by(id=id_).first()  # estou selecionandos todos os registros filtrados por um campo
+                u = Envios.query.filter_by(cod_lab=id_).all()
+
+
+                envios = Envios.query.filter(and_(Envios.cod_lab == id_, Envios.cod_user == session['user'])).all()
+
+                UPLOAD_FOLDER = './app/static/submissões/'
+                app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+                linguagem = form.linguagem.data
+
+                now = datetime.now()
+                file = request.files['arquivo']
+                ext = file.filename.rsplit(".")[1]
+                print(file.filename)
+
+                if file.filename != '':
+
+                    filename = secure_filename(str(user.id) +"_" + file.filename + "." + ext)
+                    #filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    print(3)
+                    print(form.data)
+                    lab = Envios("Aprovado", "---", session['user'], id_, now, filename, linguagem)  # passando os parametros que quero inserir
+                    db.session.add(lab)
+                    db.session.commit()
+                    r = Lab.query.filter_by(id=id_).first()  # estou selecionandos todos os registros filtrados por um campo
+                    print("vou fazer o redirect")
+                    return redirect(url_for("envsub", lab_id=id_, disc_id=disc_id))
+
+                else:
+                    print("não selecionado")
+            else:
+                print("Formulario novo ou erros")
+                print(form.data)
+
         else:
-            return "<h1>Not Found</h1> " \
-                   "<h4> <p>The requested URL was not found on the server. " \
-                   "If you entered the URL manually please check your spelling and try again.</h4> </p>"
-    return pacote
+            print("teste")
+            return "<h1> 22222 Not Found</h1> " \
+                  "<h4> <p>The requested URL was not found on the server. " \
+                    "If you entered the URL manually please check your spelling and try again.</h4> </p>"
+
+    return render_template('EnvioSubmissao.html', lab=r, env=envios, disc_id=disc_id, form=form)
+
 
 @app.route("/homeProfessor", methods=["GET", "POST"])
 @checaLogado
 @checaProfessor
 def homeprofessor():
     disc = Disciplina.query.filter(and_(Disciplina.id_prof == session['user'], Disciplina.excluir == False)).all()
-    
+
     return render_template('HomeProf2.html', disc=disc)
 
 
 @app.route("/NovaDiscp", methods=["GET", "POST"])
+@checaLogado
+@checaProfessor
 def novadisc():
-    form = Novadisciplina(request.form)
+    form = Novadisciplina(CombinedMultiDict((request.files, request.form)))
     print(form)
 
     user = User.query.filter_by(id=session['user']).first()
 
-    if user.professor == False:
-        return "<h1>Not Found</h1> " \
-               "<h4> <p>The requested URL was not found on the server. " \
-               "If you entered the URL manually please check your spelling and try again.</h4> </p>"
-    else:
-        if form.validate_on_submit():
+    if form.validate_on_submit():
 
-            #print("0")
-            UPLOAD_FOLDER = './app/static/professores/'
-            app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-            #form = NovaDisciplina(request.form)
-            now = datetime.now()
+        #print("0")
+        UPLOAD_FOLDER = './app/static/professores/'
+        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+        #form = NovaDisciplina(request.form)
+        now = datetime.now()
 
-            titulo = form.codigo.data
-            nome = form.nome.data
-            chave = form.chave.data
-            conf_chave = form.conf_chave.data
-            print(titulo)
-            print(nome)
-            print(chave)
-            print(conf_chave)
-            visivel = form.visivel.data
+        titulo = form.codigo.data
+        nome = form.nome.data
+        chave = form.chave.data
+        conf_chave = form.conf_chave.data
 
-            #print("print 1")
-            file = request.files['file']
+        print(titulo)
+        print(nome)
+        print(chave)
+        print(conf_chave)
+        visivel = form.visivel.data
+        print(visivel)
+        #print("print 1")
+        file = request.files['arquivo']
+        #logo = filename + "azul";
 
-            #print("print 2")
-            # visivel = request.form.get("Visivel")
+        ext = file.filename.rsplit(".")[1]
 
-            #id_user = session['user']
+        filename = secure_filename(str(user.id)+titulo+"."+ext)
 
-            print(user.id)
-            user = User.query.filter_by(id=session['user']).first()
-            #filename = secure_filename(file.filename)
-            #logo = filename + "azul";
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        print(filename)
 
-            print("#")
-            print("#")
-            print("#")
-            print(user.id)
-            print(visivel)
-            print("#")
-            print("#")
-            print("#")
-
-            #print(logo)
-
-            if chave == conf_chave:
-                if file and allowed_file(file.filename) == False:
-                    print(file)
-                    return "incompatível"
-                # if user does not select file, browser also
-                # submit a empty part without filename
-                if file.filename == '':
-                    print(3)
-                    flash('No selected file')
-                    return "não selecionado"
-                if file and allowed_file(file.filename):
-                    print(4)
-                    filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    #print(filename)
-                    #filename = filename + titulo
-                    #print(logo)
-                    i = Disciplina(titulo, filename, nome, chave, user.id, False, visivel)
-
-                    db.session.add(i)
-                    db.session.commit()
-                    print(5)
-            return redirect(url_for("home"))
+        if (chave != None):
+            i = Disciplina(titulo, filename, nome, None, user.id, False, visivel)
         else:
-            print(form.errors)
+            i = Disciplina(titulo, filename, nome, chave, user.id, False, visivel)
+
+        db.session.add(i)
+        db.session.commit()
+
+        return redirect(url_for("home"))
+    else:
+        print(form.errors)
 
     return render_template('NovaDisciplina.html', form=form)
 
 
 @app.route("/Perfil", methods=["GET", "POST"])
+@checaLogado
 def perfil():
     form = Perfil(request.form)
     r = User.query.filter_by(id=session['user']).first()  # estou selecionandos o primeiro dos registros filtrados por um campo
@@ -514,14 +471,10 @@ def perfil():
 def homealuno():
     user = User.query.filter_by(id=session['user']).first()
 
-    if user.professor == False:
-       disc = User_Disciplina.query.filter_by(cod_user=session['user']).all()
-       #b = User_Disciplina.query.filter(and_(User_Disciplina.cod_user == session['user'], User_Disciplina.disc.excluir == False)).all()
-       b = User_Disciplina.query.filter(and_(User_Disciplina.cod_user == session['user'], User_Disciplina.disc.has(excluir = False))).all()
-    else:
-        return "<h1>Not Found</h1> " \
-               "<h4> <p>The requested URL was not found on the server. " \
-               "If you entered the URL manually please check your spelling and try again.</h4> </p>"
+    disc = User_Disciplina.query.filter_by(cod_user=session['user']).all()
+    #b = User_Disciplina.query.filter(and_(User_Disciplina.cod_user == session['user'], User_Disciplina.disc.excluir == False)).all()
+    b = User_Disciplina.query.filter(and_(User_Disciplina.cod_user == session['user'], User_Disciplina.disc.has(excluir = False))).all()
+
 
     return render_template('view2.html', disc=b)
 
@@ -532,6 +485,7 @@ def homealuno():
 
 
 @app.route("/escolhaExerc", methods=["GET", "POST"])
+@checaLogado
 def exercicio():
     disc_id = request.args.get("disc_id")
 
@@ -540,19 +494,18 @@ def exercicio():
                "<h4> <p>The requested URL was not found on the server. " \
                "If you entered the URL manually please check your spelling and try again.</h4> </p>"
 
-    u_d = User_Disciplina.query.filter(and_(User_Disciplina.cod_user == session['user'], User_Disciplina.cod_dis == disc_id)).first_or_404()
+    #u_d = User_Disciplina.query.filter(and_(User_Disciplina.cod_user == session['user'], User_Disciplina.cod_dis == disc_id)).first_or_404()
 
 
     labs = Lab.query.filter(and_(Lab.disciplina_id == disc_id, Lab.excluir == False, Lab.visivel == True)).all()
     r = Envios.query.filter_by(cod_lab=disc_id).first()
     v = []
     S = 2
-
+    # envios = Envios.query.filter_by(cod_lab = la.id).all()
     for la in labs :
-
-        envios = Envios.query.filter_by(cod_lab = la.id).all()
+        envios = Envios.query.filter(and_(Envios.cod_user == session['user'], Envios.cod_lab == la.id)).all()
         S = 2
-        for e in envios :
+        for e in envios:
 
             if(e.status == "Aprovado"):
                 S=0
@@ -561,7 +514,7 @@ def exercicio():
             elif (S!=0 and S!=1):
                 S=2
         v.append(S)
-        print(v)
+    print(v)
 
     dados = zip(labs, v)
 
@@ -570,13 +523,20 @@ def exercicio():
 
 
 @app.route("/menudaDisc", methods=["GET", "POST"])
+@checaLogado
+@checaProfessor
 def menudisc():
 
     user = User.query.filter_by(id=session['user']).first()
 
-    if user.professor == True:
-        id_ = request.args.get("disc")
-        #lab = Lab.query.filter_by(id=id_).all()
+    id_ = request.args.get("disc")
+    if id_ == None:
+        return "<h1>Not Found</h1> " \
+               "<h4> <p>The requested URL was not found on the server. " \
+               "If you entered the URL manually please check your spelling and try again.</h4> </p>"
+    #lab = Lab.query.filter_by(id=id_).all()
+    ud = Disciplina.query.filter(and_(Disciplina.id_prof == session['user'], Disciplina.id ==id_)).all()
+    if ud:
         return render_template('MenudaDisciplina.html', id=id_)
     else:
         return "<h1>Not Found</h1> " \
@@ -585,6 +545,8 @@ def menudisc():
 
 
 @app.route("/escolhaLab", methods=["GET", "POST"])
+@checaLogado
+@checaProfessor
 def escolhaLab():
     id_ = request.args.get("disc")
     if id_ == None:
@@ -592,195 +554,198 @@ def escolhaLab():
                "<h4> <p>The requested URL was not found on the server. " \
                "If you entered the URL manually please check your spelling and try again.</h4> </p>"
     user = User.query.filter_by(id=session['user']).first()
-
-    if user.professor == True:
+    ud = Disciplina.query.filter(and_(Disciplina.id_prof == session['user'], Disciplina.id == id_)).all()
+    if ud:
         #lab = Lab.query.filter_by(disciplina_id=id_).all()
         lab = Lab.query.filter(and_(Lab.disciplina_id == id_, Lab.excluir == False)).all()
         return render_template('EscolhaLab2.html', lab=lab, disc_id=id_)
     else:
         return "<h1>Not Found</h1> " \
-                   "<h4> <p>The requested URL was not found on the server. " \
-                   "If you entered the URL manually please check your spelling and try again.</h4> </p>"
-
-
-@app.route("/novoLab", methods=["GET", "POST"])
-def novoLab():
-
-    user = User.query.filter_by(id=session['user']).first()
-
-    if user.professor == True:
-        disc_id= request.args.get("disc")
-        print(0)
-        UPLOAD_FOLDER = './EnviosLab/'
-        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-        if request.method == 'POST':
-            print (1)
-            nome = request.form.get("Titulo")
-            data = request.form.get("dataentrega")
-            visivel = request.form.get("Visivel")
-            file = request.files['file']
-            print(2)
-            if file and allowed_file(file.filename) == False:
-                print(file)
-                return "incompatível"
-            # if user does not select file, browser also
-            # submit a empty part without filename
-            if file.filename == '':
-                print(3)
-                flash('No selected file')
-                return "não selecionado"
-            if file and allowed_file(file.filename):
-                print(4)
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                print(filename)
-                i = Lab(nome, filename, data, disc_id, False, visivel)
-                db.session.add(i)
-                db.session.commit()
-                print(5)
-                return redirect(url_for("escolhaLab", disc=disc_id))
-
-    else:
-        return "<h1>Not Found</h1> " \
                "<h4> <p>The requested URL was not found on the server. " \
                "If you entered the URL manually please check your spelling and try again.</h4> </p>"
 
-    return render_template('NovoLab.html', disc_id=disc_id)
+
+@app.route("/novoLab", methods=["GET", "POST"])
+@checaLogado
+@checaProfessor
+def novoLab():
+    formulario = NovoLab(CombinedMultiDict((request.files, request.form)))
+    user = User.query.filter_by(id=session['user']).first()
+
+    disc_id= request.args.get("disc")
+    UPLOAD_FOLDER = './app/static/EnviosLab'
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+    print("dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+    data = request.form.get("data")
+    print(data)
+    if formulario.validate_on_submit():
+
+        nome = request.form.get("titulo")
+        data = request.form.get("data")
+        visivel = request.form.get("visivel")
+        saida = request.form.get("comparacao")
+        now = datetime.now()
+        substituicao = request.form.get("substituicao")
+        file = request.files['arquivo']
+        ext = file.filename.rsplit(".")[1]
+
+        filename = secure_filename(str(user.id) + nome + "." + ext)
+        #filename = secure_filename(file.filename)
+
+        print(nome)
+        print("dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        print(data)
+        print(visivel)
+        print(filename)
+        cod_subs = None
+
+        cod_subs = request.form.get("codigo")
+        print("cooooooooooodigoooooooooo")
+        print(cod_subs)
+
+        print("entreiiiii")
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        print(filename)
+        i = Lab(nome, filename, data, disc_id, False, visivel,saida, cod_subs)
+        db.session.add(i)
+        db.session.commit()
+        print(5)
+
+
+        return redirect(url_for("escolhaLab", disc=disc_id))
+
+
+    return render_template('NovoLab.html', disc_id=disc_id, form=formulario)
 
 
 @app.route("/relatorios", methods=["GET", "POST"])
+@checaLogado
+@checaProfessor
 def relatorios():
 
     user = User.query.filter_by(id=session['user']).first()
 
-    if user.professor == True:
 
-        disc_id = request.args.get("disc_id")
-        laboratorios = Lab.query.filter_by(disciplina_id = disc_id).all()
-        alunos = User_Disciplina.query.filter_by(cod_dis = disc_id).all()
+    disc_id = request.args.get("disc_id")
+    laboratorios = Lab.query.filter_by(disciplina_id = disc_id).all()
+    alunos = User_Disciplina.query.filter_by(cod_dis = disc_id).all()
+    qtdalunos = User_Disciplina.query.filter_by(cod_dis=disc_id).count()
 
-
-        labs = Lab.query.filter(and_(Lab.disciplina_id == disc_id, Lab.excluir == False, Lab.visivel == True)).all()
-
-        v = []
-        S = 2
+    labs = Lab.query.filter(and_(Lab.disciplina_id == disc_id, Lab.excluir == False, Lab.visivel == True)).all()
+    qtdlabs = Lab.query.filter(and_(Lab.disciplina_id == disc_id, Lab.excluir == False, Lab.visivel == True)).count()
 
 
+    l_alunos = []
+    totais = []
+
+
+    for al in alunos:
+        #print(la)
+        l = []
+        total = [0, 0, 0]
         for la in labs:
-            for al in alunos:
-                envios = Envios.query.filter(and_(Envios.cod_lab == la.id, Envios.cod_user == al.id)).all()
-                #envios = Envios.query.filter_by(cod_lab=la.id).all()
-                S = 2
-                for e in envios:
+            #print(al)
+            envios = Envios.query.filter(and_(Envios.cod_lab == la.id, Envios.cod_user == al.id)).all()
+            #envios = Envios.query.filter_by(cod_lab=la.id).all()
+            S = 2
+            for e in envios:
+                if (e.status == "Aprovado"):
+                    S = 0
 
-                    if (e.status == "Aprovado"):
-                        S = 0
-                    elif (S != 0 and e.status == "Reprovado"):
-                        S = 1
-                    elif (S != 0 and S != 1):
-                        S = 2
-        v.append(S)
-        print(v)
+                elif (S != 0 and e.status == "Reprovado"):
+                    S = 1
 
-        dados = zip(labs, v)
+                elif (S != 0 and S != 1):
+                    S = 2
+
+            total[S] += 1
+            l.append(S)
+        totais.append(total)
+
+        l_alunos.append(l)
 
 
-        return render_template('Relatorios.html', disc_id = disc_id, labs = labs, alunos=alunos, dados = dados)
+    #dados = zip(l,labs )
 
-    else:
-        return "<h1>Not Found</h1> " \
-               "<h4> <p>The requested URL was not found on the server. " \
-               "If you entered the URL manually please check your spelling and try again.</h4> </p>"
+
+    return render_template('Relatorios.html', disc_id = disc_id, labs = labs, alunos=alunos, dados = l_alunos, totais=totais, qtdlabs = qtdlabs, qtdalunos=qtdalunos)
+
 
 @app.route("/novoProfessor", methods=["GET", "POST"])
+@checaLogado
+@checaProfessor
 def novoProfessor():
     form = NovoConvite(request.form)
     user = User.query.filter_by(id=session['user']).first()
     print(user.id)
 
-    if user.professor == True:
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            nome = form.nome.data
+            email = form.email.data
+            texto = form.mensagem.data
+            usuario = user.id
+            #print(nome)
+            #print(email)
+            #print(texto)
+            #print(usuario)
 
-        if request.method == 'POST':
-            if form.validate_on_submit():
-                nome = form.nome.data
-                email = form.email.data
-                texto = form.mensagem.data
-                usuario = user.id
-                #print(nome)
-                #print(email)
-                #print(texto)
-                #print(usuario)
+            i = Convite(nome, email, texto, usuario)  # passando os parametros que quero inserir#
+            db.session.add(i)  # sessao=periodo que meu usuario esta logado
+            db.session.commit()
+            return redirect(url_for("homeprofessor"))
+        else:
+            print(form.errors)
 
-                i = Convite(nome, email, texto, usuario)  # passando os parametros que quero inserir#
-                db.session.add(i)  # sessao=periodo que meu usuario esta logado
-                db.session.commit()
-                return redirect(url_for("homeprofessor"))
-            else:
-                print(form.errors)
-
-    else:
-        return "<h1>Not Found</h1> " \
-               "<h4> <p>The requested URL was not found on the server. " \
-               "If you entered the URL manually please check your spelling and try again.</h4> </p>"
 
     return render_template('NovoProfessor.html', form=form)
 
 
 @app.route("/editarLab", methods=["GET", "POST"])
+@checaLogado
+@checaProfessor
 def editarLab():
-
-
+    form = EdtLab(CombinedMultiDict((request.files, request.form)))
     user = User.query.filter_by(id=session['user']).first()
     disc_id = request.args.get("disc_id")
     id_ = request.args.get("lab_id")
     lab = Lab.query.filter_by(id=id_).first()
 
+    if form.validate_on_submit():
 
-    if user.professor == True:
-        if request.method == 'POST':
+        UPLOAD_FOLDER = './EnviosLab/'
+        app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-            UPLOAD_FOLDER = './EnviosLab/'
-            app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+        novotitulo = form.titulo.data
+        novadata = request.form['dataentrega']
+        file = request.files['arquivo']
+        filename = secure_filename(file.filename)
+
+        print(novadata)
 
 
-            if request.method == 'POST':
-                print("check1")
+        if file.filename != '':
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            print(3)
+            filename = secure_filename(file.filename)
+            lab.arquivo = filename
 
-                titulo_ = request.form.get("Titulo")
-                data_ = request.form.get("dataentrega")
-                file = request.files['file']
+        if novotitulo != "":
+            lab.titulo = novotitulo
 
-                if file and allowed_file(file.filename) == False:
+        if novadata != "":
+            lab.datahora = novadata
 
-                    print("incompatível")
-                # if user does not select file, browser also
-                # submit a empty part without filename
-                if file.filename == '':
 
-                    print("não selecionado")
-                if file and allowed_file(file.filename):
+        db.session.add(lab)
+        db.session.commit()
+        return redirect(url_for("escolhaLab", disc = disc_id))
 
-                    filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    print(3)
 
-                    filename = secure_filename(file.filename)
-                    print(titulo_)
-                    lab.titulo = titulo_
-                    lab.arquivo = filename
-                    lab.datahora = data_
 
-                    db.session.add(lab)
-                    db.session.commit()
-                    return redirect(url_for("escolhaLab", disc = disc_id))
-
-    else:
-        return "<h1>Not Found</h1> " \
-               "<h4> <p>The requested URL was not found on the server. " \
-               "If you entered the URL manually please check your spelling and try again.</h4> </p>"
-
-    return render_template('EditarLab.html', lab_id=id_, lab = lab, disc_id= disc_id)
+    return render_template('EditarLab.html', lab_id=id_, lab = lab, disc_id= disc_id, form=form)
 
 
 #@app.route("/login", methods=["GET", "POST"])
@@ -907,90 +872,72 @@ def testelab():
     return render_template('EscolhaLab3.html')
 
 @app.route("/excluirDisc")
+@checaLogado
+@checaProfessor
 def excluirdisc():
     user = User.query.filter_by(id=session['user']).first()
-    if user.professor == True:
+    disc_id = request.args.get("disc")
+    r = Disciplina.query.filter_by(id=disc_id).first()  # estou pegando o primeiro registro que tem o username F
+    r.excluir = True # pego o r egistro que já usei lá em cima, e altero o name dele
+    db.session.add(r)
+    db.session.commit()
 
-        disc_id = request.args.get("disc")
-        r = Disciplina.query.filter_by(id=disc_id).first()  # estou pegando o primeiro registro que tem o username F
-        r.excluir = True # pego o r egistro que já usei lá em cima, e altero o name dele
-        db.session.add(r)
-        db.session.commit()
-
-        return redirect(url_for("homeprofessor"))
-    else:
-        return "<h1>Not Found</h1> " \
-               "<h4> <p>The requested URL was not found on the server. " \
-               "If you entered the URL manually please check your spelling and try again.</h4> </p>"
-
+    return redirect(url_for("homeprofessor"))
 
 
 @app.route("/deixarDiscInv")
+@checaLogado
+@checaProfessor
 def deixardiscinv():
 
     user = User.query.filter_by(id=session['user']).first()
-    if user.professor == True:
-        disc_id = request.args.get("disc")
-        r = Disciplina.query.filter_by(id=disc_id).first()  # estou pegando o primeiro registro que tem o username F
-        if r.visivel == False:
-            r.visivel = True
-        else:
-            r.visivel = False
-        db.session.add(r)
-        db.session.commit()
-
-        return redirect(url_for("homeprofessor"))
-
+    disc_id = request.args.get("disc")
+    r = Disciplina.query.filter_by(id=disc_id).first()  # estou pegando o primeiro registro que tem o username F
+    if r.visivel == False:
+        r.visivel = True
     else:
-        return "<h1>Not Found</h1> " \
-               "<h4> <p>The requested URL was not found on the server. " \
-               "If you entered the URL manually please check your spelling and try again.</h4> </p>"
+        r.visivel = False
+    db.session.add(r)
+    db.session.commit()
+
+    return redirect(url_for("homeprofessor"))
 
 
 
 @app.route("/excluirLab")
+@checaLogado
+@checaProfessor
 def excluirlab():
     user = User.query.filter_by(id=session['user']).first()
 
-    if user.professor == True:
-        lab_id = request.args.get("lab_id")
-        r = Lab.query.filter_by(id=lab_id).first()  # estou pegando o primeiro registro que tem o username F
-        disc_id = r.disciplina.id
-        r.excluir = True # pego o registro que já usei lá em cima, e altero o name dele
-        db.session.add(r)
-        db.session.commit()
-        return redirect(url_for("escolhaLab", disc=disc_id))
-    else:
-        return "<h1>Not Found</h1> " \
-               "<h4> <p>The requested URL was not found on the server. " \
-               "If you entered the URL manually please check your spelling and try again.</h4> </p>"
-
+    lab_id = request.args.get("lab_id")
+    r = Lab.query.filter_by(id=lab_id).first()  # estou pegando o primeiro registro que tem o username F
+    disc_id = r.disciplina.id
+    r.excluir = True # pego o registro que já usei lá em cima, e altero o name dele
+    db.session.add(r)
+    db.session.commit()
+    return redirect(url_for("escolhaLab", disc=disc_id))
 
 
 @app.route("/deixarLabInv")
+@checaLogado
+@checaProfessor
 def deixarlabinv():
 
     user = User.query.filter_by(id=session['user']).first()
 
 
-    if user.professor == True:
-        disc_id = request.args.get("disc_id")
-        print(disc_id)
-        lab_id = request.args.get("lab_id")
-        r = Lab.query.filter_by(id=lab_id).first()  # estou pegando o primeiro registro que tem o username F
-        if r.visivel == False:
-            r.visivel = True
-        else:
-            r.visivel = False
-        db.session.add(r)
-        db.session.commit()
-        return redirect(url_for("escolhaLab", disc = disc_id))
-
+    disc_id = request.args.get("disc_id")
+    print(disc_id)
+    lab_id = request.args.get("lab_id")
+    r = Lab.query.filter_by(id=lab_id).first()  # estou pegando o primeiro registro que tem o username F
+    if r.visivel == False:
+        r.visivel = True
     else:
-        return "<h1>Not Found</h1> " \
-               "<h4> <p>The requested URL was not found on the server. " \
-               "If you entered the URL manually please check your spelling and try again.</h4> </p>"
-
+        r.visivel = False
+    db.session.add(r)
+    db.session.commit()
+    return redirect(url_for("escolhaLab", disc = disc_id))
 
 
 #@app.route('/upload', methods=['GET', 'POST'])
@@ -1015,3 +962,12 @@ def deixarlabinv():
 #            print(filename)
  #           return "funfou"
  #   return render_template('EnvioTeste.html')
+
+
+@app.route("/download", methods=["GET", "POST"])
+def download():
+    UPLOAD_FOLDER = './EnviosLab/'
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    r = Lab.query.filter_by(id=1).first()
+    uploads = os.path.join(current_app.root_path, app.config['UPLOAD_FOLDER'])
+    return send_from_directory(directory=uploads, filename=r.arquivo)
